@@ -1,6 +1,7 @@
 import csv
 from openpyxl import Workbook
 from openpyxl import load_workbook
+from openpyxl.styles import Alignment 
 
 #
 # get data from forum CSV file
@@ -59,6 +60,9 @@ def read_grade_sheet(filename):
         for key, cell in zip(header, row):
             if key is not None:
                 values[key] = cell.value
+        # skip None lines        
+        if values[header[0]] is None:
+            continue
         student = normalize_key(f"{values[header[0]]} {values[header[1]]}")
         students[student] = values;
     return students;
@@ -69,11 +73,15 @@ def read_grade_sheet(filename):
 def gen_sheet(filename, participation, sheets):
     wb = Workbook()
     ws = wb.active
+    ws.title = 'Overview'
 
+    #
     # fill first sheet with overall participation
+    #
     colnames = ['First name', 'Surname', 'Marker'] + [ x for x,y in sheets] + ['Total']
     for idx,h in enumerate(colnames):
         ws.cell(row=1, column=idx+1).value = h
+        ws.cell(row=1, column=idx+1).alignment = Alignment(horizontal='center')
 
     # data part
     for idx,student in enumerate(overview.keys()):
@@ -83,18 +91,31 @@ def gen_sheet(filename, participation, sheets):
         ws.cell(row=row, column=3).value = overview[student]['Marker']
         column = 4
         for sheet,students in sheets:
-            ws.cell(row=row, column=column).value = participation[student][sheet]
+            ws.cell(row=row, column=column).value = 'X' if participation[student][sheet] else '-'
+            ws.cell(row=row, column=column).alignment = Alignment(horizontal='center')
             column += 1
         ws.cell(row=row, column=column).value = participation[student]['total']
 
+    #
     # generate sheets with the data
+    #
     for sheet,students in sheets:
         ws = wb.create_sheet(title=sheet)
+        # Header
+        colnames = ['First name', 'Surname', 'Marker'] + [ x for x in header.keys()]
+        for idx,h in enumerate(colnames):
+            ws.cell(row=1, column=idx+1).value = h
 
+        # Data
         for idx,student in enumerate(students):
-            row = idx+1
-            ws.cell(row=row, column=1).value = student
-            ws.cell(row=row, column=2).value = overview[student]['Marker']
+            row = idx+2
+            ws.cell(row=row, column=1).value = overview[student]['First name']
+            ws.cell(row=row, column=2).value = overview[student]['Surname']
+            ws.cell(row=row, column=3).value = overview[student]['Marker']
+            column = 4
+            for key in header.keys():
+                ws.cell(row=row, column=column).value = students[student][key]
+                column += 1
 
     wb.save(filename=filename)
 
