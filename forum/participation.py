@@ -1,154 +1,185 @@
+'''
+convert Moodle participation into spreadsheet
+'''
 import csv
 from openpyxl import Workbook
 from openpyxl import load_workbook
-from openpyxl.styles import Alignment 
+from openpyxl.styles import Alignment
 
-#
-# get data from forum CSV file
-#
 def get_data(filename, skip_header=True):
+    '''get data from forum CSV file'''
     # utf-8-bom encoding
-    with open(filename, 'r', encoding='utf_8_sig') as f:
-        reader = csv.reader(f)
-        if (skip_header): 
+    with open(filename, 'r', encoding='utf_8_sig') as file:
+        reader = csv.reader(file)
+        if skip_header:
             next(reader)
         rows = []
         for row in reader:
             rows.append(row)
-        return rows;
+        return rows
 
-#
-# get header of CSV file
-#
 def get_header(data):
+    '''get header of CSV file'''
     header = {}
     for idx, item in enumerate(data[0]):
         header[item] = idx
     return data[1:],header
 
-#
-#
-#
-def get_students(data):
+def get_students(data,header):
+    '''retrieve dictonary with student as key and as value all his postings'''
     students = {}
     for row in data:
         student = normalize_key(row[header['userfullname']])
-        students[student] = merge(list(header.keys()), row)
-    return students;
+        students[student] = students.get(student, []) + [ merge(list(header.keys()), row) ]
+    return students
 
-#
-# remove all whitespace characters
-#
 def normalize_key(string):
+    '''remove all whitespace characters'''
     return ''.join(string.split()).lower()
 
-def merge(h,row):
-    return { h[i]: row[i] for i in range(len(h)) }
+def merge(header,row):
+    '''Merge header and row into dictonary'''
+    return { header[i]: row[i].strip() for i in range(len(header)) }
 
-#
-# read participation part of grade spreadsheet
-#
+
 def read_grade_sheet(filename):
-    wb = load_workbook(filename = filename, data_only=True)
-    ws = wb['Quizes - Participation']
+    '''read participation part of grade spreadsheet'''
+    workbook = load_workbook(filename = filename, data_only=True)
+    worksheet = workbook['Quizes - Participation']
 
-    header = [cell.value for cell in ws[1]]
+    header = [cell.value for cell in worksheet[1]]
     students = {}
 
-    for row in ws.iter_rows(min_row=2, min_col=1):
+    for row in worksheet.iter_rows(min_row=2, min_col=1):
         values = {}
         for key, cell in zip(header, row):
             if key is not None:
                 values[key] = cell.value
-        # skip None lines        
+        # skip None lines
         if values[header[0]] is None:
             continue
         student = normalize_key(f"{values[header[0]]} {values[header[1]]}")
-        students[student] = values;
-    return students;
+        students[student] = values
+    return students
 
-#
-#
-#
+
 def gen_sheet(filename, participation, sheets):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = 'Overview'
+    '''Generate resulting Excel sheet'''
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Overview'
 
     #
     # fill first sheet with overall participation
     #
-    colnames = ['First name', 'Surname', 'Marker'] + [ x for x,y in sheets] + ['Total']
-    for idx,h in enumerate(colnames):
-        ws.cell(row=1, column=idx+1).value = h
-        ws.cell(row=1, column=idx+1).alignment = Alignment(horizontal='center')
+    colnames = ['First name', 'Surname', 'Marker'] + [ x for x,_ in sheets] + ['Total']
+    for idx,header in enumerate(colnames):
+        worksheet.cell(row=1, column=idx+1).value = header
+        worksheet.cell(row=1, column=idx+1).alignment = Alignment(horizontal='center')
 
     # data part
-    for idx,student in enumerate(overview.keys()):
-        row = idx+2
-        ws.cell(row=row, column=1).value = overview[student]['First name']
-        ws.cell(row=row, column=2).value = overview[student]['Surname']
-        ws.cell(row=row, column=3).value = overview[student]['Marker']
-        column = 4
+    row = 1
+    for student,value in overview.items():
+        row += 1
+        worksheet.cell(row=row, column=1).value = value['First name']
+        worksheet.cell(row=row, column=2).value = value['Surname']
+        worksheet.cell(row=row, column=3).value = value['Marker']
+        column = 3
         for sheet,students in sheets:
-            ws.cell(row=row, column=column).value = 'X' if participation[student][sheet] else '-'
-            ws.cell(row=row, column=column).alignment = Alignment(horizontal='center')
             column += 1
-        ws.cell(row=row, column=column).value = participation[student]['total']
+            worksheet.cell(row=row, column=column).value = len(students[student]) if participation[student][sheet] else '-'
+            worksheet.cell(row=row, column=column).alignment = Alignment(horizontal='center')
+        worksheet.cell(row=row, column=column+1).value = participation[student]['total']
+
+    #
+    # generate sheets with all postst
+    #
+    worksheet = workbook.create_sheet(title='Posts')
+    worksheet.column_dimensions['E'].width = 40
+    worksheet.column_dimensions['F'].width = 100
+    row = 1
+    # Header
+    headers = ['subject', 'message', 'wordcount']
+    colnames = ['First name', 'Surname', 'Marker', 'Forum'] + headers
+    for idx,header in enumerate(colnames):
+        worksheet.cell(row=row, column=idx+1).value = header
+
+    for student,value in overview.items():
+        for sheet,students in sheets:
+            # skip students without post, but also keep the same order as in overview
+            if student not in students:
+                continue
+            for data in students[student]:
+                row += 1
+                worksheet.cell(row=row, column=1).value = value['First name']
+                worksheet.cell(row=row, column=2).value = value['Surname']
+                worksheet.cell(row=row, column=3).value = value['Marker']
+                worksheet.cell(row=row, column=4).value = sheet
+                column = 4
+                for key in headers:
+                    column += 1
+                    worksheet.cell(row=row, column=column).value = data[key]
+                    worksheet.cell(row=row, column=column).alignment = Alignment(wrap_text=True)
 
     #
     # generate sheets with the data
     #
     for sheet,students in sheets:
-        ws = wb.create_sheet(title=sheet)
+        worksheet = workbook.create_sheet(title=sheet)
+        worksheet.column_dimensions['D'].width = 40
+        worksheet.column_dimensions['E'].width = 100
+
         # Header
-        colnames = ['First name', 'Surname', 'Marker'] + [ x for x in header.keys()]
-        for idx,h in enumerate(colnames):
-            ws.cell(row=1, column=idx+1).value = h
+        headers = ['subject', 'message', 'wordcount']
+        colnames = ['First name', 'Surname', 'Marker'] + headers
+        for idx,header in enumerate(colnames):
+            worksheet.cell(row=1, column=idx+1).value = header
 
         # Data
-        for idx,student in enumerate(students):
-            row = idx+2
-            ws.cell(row=row, column=1).value = overview[student]['First name']
-            ws.cell(row=row, column=2).value = overview[student]['Surname']
-            ws.cell(row=row, column=3).value = overview[student]['Marker']
-            column = 4
-            for key in header.keys():
-                ws.cell(row=row, column=column).value = students[student][key]
-                column += 1
+        row = 1
+        for student,data in overview.items():
+            # skip students without post, but also keep the same order as in overview
+            if student not in students:
+                continue
+            for value in students[student]:
+                row += 1
+                worksheet.cell(row=row, column=1).value = data['First name']
+                worksheet.cell(row=row, column=2).value = data['Surname']
+                worksheet.cell(row=row, column=3).value = data['Marker']
+                column = 3
+                for key in headers:
+                    column += 1
+                    worksheet.cell(row=row, column=column).value = value[key]
+                    worksheet.cell(row=row, column=column).alignment = Alignment(wrap_text=True)
 
-    wb.save(filename=filename)
+    workbook.save(filename=filename)
 
-#
-#
-# 
+
 def calc_participation(sheets):
+    '''Calculate overall participation excel file'''
     participation = {}
 
     # create empty dictonaries for every student
-    for student in overview.keys():
+    for student in overview:
         key = normalize_key(student)
         participation[key] = { 'total' : 0}
 
     for sheet,students in sheets:
-        for student in overview.keys():
+        for student in overview:
             key = normalize_key(student)
             count = participation[key]['total']
             if key in students:
                 count += 1
             participation[key].update({ sheet : key in students, 'total' : count })
-    return participation        
+    return participation
 
 #
 # Main application
 #
 overview = read_grade_sheet('bloc-516 - Fall 2022 - Exam Marks.xlsx')
-data1,header = get_header(get_data('discussion-1.csv', False))
-data2 = get_data('discussion-2.csv')
+data1,csv_header = get_header(get_data('discussion-1.csv', False))
+students1 = get_students(data1,csv_header)
+students2 = get_students(get_data('discussion-2.csv'),csv_header)
 
-students1 = get_students(data1)
-students2 = get_students(data2)
-
-sheets = [("P-1", students1),("P-2", students2)]
-participation = calc_participation(sheets)
-gen_sheet('participation.xlsx', participation, sheets);
+sheets_list = [("P-1", students1),("P-2", students2)]
+gen_sheet('participation.xlsx', calc_participation(sheets_list), sheets_list)
