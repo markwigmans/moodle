@@ -62,17 +62,41 @@ def read_grade_sheet(filename):
         students[student] = values
     return students
 
+def align_data(worksheet):
+    '''Align all data of the given sheet'''
+    for row in range(2,worksheet.max_row+1):
+        for column in range(1,worksheet.max_column+1):
+            worksheet.cell(row=row, column=column).alignment = Alignment(vertical='top', wrap_text=True)
+
+
 
 def gen_sheet(filename, participation, sheets):
     '''Generate resulting Excel sheet'''
     workbook = Workbook()
     worksheet = workbook.active
-    worksheet.title = 'Overview'
+
+    #
+    # Create readme part
+    #
+    worksheet.title = 'Readme'
+    worksheet.cell(row=1, column=1).value = "Paricipation overview"
+    worksheet.cell(row=2, column=1).value = "Sheet 'overview' contains per student the number of posts"
+    worksheet.cell(row=3, column=1).value = "Sheet 'posts' contains all posts of all students"
+
+    row = 4
+    for sheet,description,_ in sheets:
+        row += 1
+        worksheet.cell(row=row, column=1).value = f"{sheet} : {description}"
+
+    #
+    # Overview part
+    #
+    worksheet = workbook.create_sheet(title='Overview')
 
     #
     # fill first sheet with overall participation
     #
-    colnames = ['First name', 'Surname', 'Marker'] + [ x for x,_ in sheets] + ['Total']
+    colnames = ['First name', 'Surname', 'Marker'] + [ x for x,description,students in sheets] + ['Forums']
     for idx,header in enumerate(colnames):
         worksheet.cell(row=1, column=idx+1).value = header
         worksheet.cell(row=1, column=idx+1).alignment = Alignment(horizontal='center')
@@ -85,27 +109,28 @@ def gen_sheet(filename, participation, sheets):
         worksheet.cell(row=row, column=2).value = value['Surname']
         worksheet.cell(row=row, column=3).value = value['Marker']
         column = 3
-        for sheet,students in sheets:
+        for sheet,_,students in sheets:
             column += 1
             worksheet.cell(row=row, column=column).value = len(students[student]) if participation[student][sheet] else '-'
             worksheet.cell(row=row, column=column).alignment = Alignment(horizontal='center')
         worksheet.cell(row=row, column=column+1).value = participation[student]['total']
+        worksheet.auto_filter.ref = "C1:C" + str(worksheet.max_row)
 
     #
-    # generate sheets with all postst
+    # generate sheets with all posts
     #
     worksheet = workbook.create_sheet(title='Posts')
     worksheet.column_dimensions['E'].width = 40
     worksheet.column_dimensions['F'].width = 100
-    row = 1
-    # Header
+
     headers = ['subject', 'message', 'wordcount']
     colnames = ['First name', 'Surname', 'Marker', 'Forum'] + headers
+    row = 1
     for idx,header in enumerate(colnames):
         worksheet.cell(row=row, column=idx+1).value = header
 
     for student,value in overview.items():
-        for sheet,students in sheets:
+        for sheet,_,students in sheets:
             # skip students without post, but also keep the same order as in overview
             if student not in students:
                 continue
@@ -119,12 +144,13 @@ def gen_sheet(filename, participation, sheets):
                 for key in headers:
                     column += 1
                     worksheet.cell(row=row, column=column).value = data[key]
-                    worksheet.cell(row=row, column=column).alignment = Alignment(wrap_text=True)
+        worksheet.auto_filter.ref = "A1:D" + str(worksheet.max_row)
+        align_data(worksheet)
 
     #
     # generate sheets with the data
     #
-    for sheet,students in sheets:
+    for sheet,_,students in sheets:
         worksheet = workbook.create_sheet(title=sheet)
         worksheet.column_dimensions['D'].width = 40
         worksheet.column_dimensions['E'].width = 100
@@ -151,7 +177,10 @@ def gen_sheet(filename, participation, sheets):
                     column += 1
                     worksheet.cell(row=row, column=column).value = value[key]
                     worksheet.cell(row=row, column=column).alignment = Alignment(wrap_text=True)
+            worksheet.auto_filter.ref = "A1:C" + str(worksheet.max_row)
+            align_data(worksheet)
 
+    workbook.active = workbook['Overview']
     workbook.save(filename=filename)
 
 
@@ -164,7 +193,7 @@ def calc_participation(sheets):
         key = normalize_key(student)
         participation[key] = { 'total' : 0}
 
-    for sheet,students in sheets:
+    for sheet,_,students in sheets:
         for student in overview:
             key = normalize_key(student)
             count = participation[key]['total']
@@ -181,5 +210,7 @@ data1,csv_header = get_header(get_data('discussion-1.csv', False))
 students1 = get_students(data1,csv_header)
 students2 = get_students(get_data('discussion-2.csv'),csv_header)
 
-sheets_list = [("P-1", students1),("P-2", students2)]
+sheets_list = [
+    ('P-1', 'Session 4 - Creating Money', students1),
+    ("P-2", 'Session 6 - Securitization', students2)]
 gen_sheet('participation.xlsx', calc_participation(sheets_list), sheets_list)
