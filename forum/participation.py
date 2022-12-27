@@ -5,6 +5,7 @@ import csv
 from openpyxl import Workbook
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
+import sys
 
 def get_data(filename, skip_header=True):
     '''get data from forum CSV file'''
@@ -70,7 +71,7 @@ def align_data(worksheet):
 
 
 
-def gen_sheet(filename, participation, sheets):
+def gen_sheet(filename, participation, overview, sheets):
     '''Generate resulting Excel sheet'''
     workbook = Workbook()
     worksheet = workbook.active
@@ -184,7 +185,7 @@ def gen_sheet(filename, participation, sheets):
     workbook.save(filename=filename)
 
 
-def calc_participation(sheets):
+def calc_participation(overview, sheets):
     '''Calculate overall participation excel file'''
     participation = {}
 
@@ -205,12 +206,19 @@ def calc_participation(sheets):
 #
 # Main application
 #
-overview = read_grade_sheet('bloc-516 - Fall 2022 - Exam Marks.xlsx')
-data1,csv_header = get_header(get_data('discussion-1.csv', False))
-students1 = get_students(data1,csv_header)
-students2 = get_students(get_data('discussion-2.csv'),csv_header)
+def main(args):
+    overview = read_grade_sheet('bloc-516 - Fall 2022 - Exam Marks.xlsx')
+    data1,csv_header = get_header(get_data('discussion-1.csv', False))
+    students1 = get_students(data1,csv_header)
+    sheets_list = [
+        ('P-1', 'Session 4  - Creating Money', students1),
+        ("P-2", 'Session 6  - Securitization', get_students(get_data('discussion-2.csv'),csv_header)),
+        ("P-3", 'Session 8  - Central bank digital currencies', get_students(get_data('discussion-3.csv'),csv_header)),
+        ("P-4", 'Session 10 - Valuation of Financial Instruments', get_students(get_data('discussion-4.csv'),csv_header)),
+        ("P-5", 'Session 12 - Evaluating Cryptocurrencies', get_students(get_data('discussion-5.csv'),csv_header))
+        ]
+    gen_sheet('participation.xlsx', calc_participation(overview, sheets_list), overview, sheets_list)
 
-sheets_list = [
-    ('P-1', 'Session 4 - Creating Money', students1),
-    ("P-2", 'Session 6 - Securitization', students2)]
-gen_sheet('participation.xlsx', calc_participation(sheets_list), sheets_list)
+
+if __name__ == '__main__':
+    main(sys.argv)
