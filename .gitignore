@@ -1,5 +1,7 @@
 exam/data/*
 exam/markers/*
 exam/*.zip
-exam/*.xlsx
-exam/__pycache__/*
+**/*.xlsx
+**/*.csv
+**/__pycache__/*
+
