@@ -1,6 +1,7 @@
 import string
 import sys
 import pandas as pd
+import xlsxwriter.utility
 
 # used column names as constants
 KEY = "key"
@@ -108,7 +109,8 @@ def gen_sheet(filename, participation, overview, sheets):
         index=False)
     worksheet = writer.sheets['Overview']
     worksheet.freeze_panes(1, 0)
-    worksheet.set_column('D:H', None, fmt_number) 
+    column_letter = xlsxwriter.utility.xl_col_to_name(len(sheets) + 2)
+    worksheet.set_column(f"D:{column_letter}", None, fmt_number) 
     worksheet.autofilter(filter_range('C1:C', worksheet))
 
     #
