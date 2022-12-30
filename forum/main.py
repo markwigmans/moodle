@@ -1,3 +1,4 @@
+import string
 import sys
 import pandas as pd
 
@@ -11,12 +12,15 @@ FORUM = "Forum"
 MESSAGE = 'message'
 
 
-def normalize_key(string:str):
-    """remove all whitespace characters"""
-    return "".join(string.split()).lower()
+def normalize_key(key: str, remove_chars: str = string.whitespace) -> str:
+    """Remove all specified characters from the input string and return the result in lowercase."""
+    if key is not None:
+        translation_table = str.maketrans("", "", remove_chars)
+        return key.translate(translation_table).lower()
+    return ""
 
 
-def read_grade_sheet(filename:str):
+def read_grade_sheet(filename:str) -> pd.DataFrame:
     """read participation part of grade spreadsheet"""
     worksheet = pd.read_excel(filename, sheet_name="Quizes - Participation")
     worksheet = worksheet.dropna(subset=[FIRST_NAME, SURNAME])
@@ -25,7 +29,7 @@ def read_grade_sheet(filename:str):
     return worksheet
 
 
-def get_students(filename:str):
+def get_students(filename:str) -> pd.core.groupby.generic.DataFrameGroupBy:
     """get students from forum CSV file"""
     df = pd.read_csv(filename)
     # groupBy() can't handle empty DataFrames it seems, so we have to create a trick
@@ -67,7 +71,7 @@ def calc_participation(overview, sheets):
     return df
 
 
-def filter_range(prefix:str, worksheet):
+def filter_range(prefix:str, worksheet) -> str:
     """Create the range the given worksheet will have a autofilter range"""
     if worksheet.dim_rowmax > 0:
         return prefix + str(worksheet.dim_rowmax)
@@ -156,7 +160,7 @@ def gen_sheet(filename, participation, overview, sheets):
     writer.close()
 
 
-def main(args):
+def main(args) -> None:
     """Main application"""
     overview = read_grade_sheet("bloc-516 - Fall 2022 - Exam Marks.xlsx")
     sheets_list = [
