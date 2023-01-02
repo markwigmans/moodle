@@ -16,6 +16,7 @@ WORD_COUNT = 'Words'
 LINK = 'Link'
 PREFIX_LINK = "https://courses.unic.ac.cy/mod/forum/discuss.php?d="
 
+
 def normalize_key(key: str, remove_chars: str = string.whitespace) -> str:
     """Remove all specified characters from the input string and return the result in lowercase."""
     if key is not None:
@@ -33,7 +34,7 @@ def read_grade_sheet(filename:str) -> pd.DataFrame:
     return worksheet
 
 
-def get_students(filename:str) -> pd.core.groupby.generic.DataFrameGroupBy:
+def get_posts(filename:str) -> pd.core.groupby.generic.DataFrameGroupBy:
     """get students from forum CSV file"""
     df = pd.read_csv(filename)
     # groupBy() can't handle empty DataFrames it seems, so we have to create a trick
@@ -41,6 +42,7 @@ def get_students(filename:str) -> pd.core.groupby.generic.DataFrameGroupBy:
         df = df.rename(columns={'wordcount': WORD_COUNT, 'message' : MESSAGE, 'subject' : SUBJECT})
         df[KEY] = df.apply(lambda row: normalize_key(row["userfullname"]), axis=1)
         df[LINK] = df.apply(lambda row: f"{PREFIX_LINK}{row['discussion']}", axis=1)
+        df[SUBJECT] = df[SUBJECT].apply(lambda x: x.strip())
         df[MESSAGE] = df[MESSAGE].apply(lambda x: x.strip())
     else:
         df = pd.DataFrame({KEY: []})
@@ -187,11 +189,11 @@ def main(args) -> None:
     """Main application"""
     overview = read_grade_sheet("students.xlsx")
     sheets_list = [
-        ("P-1", "Session 4  - Creating Money", get_students("discussion-1.csv")),
-        ("P-2", "Session 6  - Securitization", get_students("discussion-2.csv")),
-        ("P-3", "Session 8  - Central bank digital currencies", get_students("discussion-3.csv")),
-        ("P-4", "Session 10 - Valuation of Financial Instruments",get_students("discussion-4.csv")),
-        ("P-5", "Session 12 - Evaluating Cryptocurrencies", get_students("discussion-5.csv")),
+        ("P-1", "Session 4  - Creating Money", get_posts("discussion-1.csv")),
+        ("P-2", "Session 6  - Securitization", get_posts("discussion-2.csv")),
+        ("P-3", "Session 8  - Central bank digital currencies", get_posts("discussion-3.csv")),
+        ("P-4", "Session 10 - Valuation of Financial Instruments",get_posts("discussion-4.csv")),
+        ("P-5", "Session 12 - Evaluating Cryptocurrencies", get_posts("discussion-5.csv")),
     ]
     participation = calc_participation(overview, sheets_list)
     gen_sheet("participation.xlsx", participation, overview, sheets_list)
