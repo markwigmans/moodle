@@ -3,6 +3,7 @@ import re
 import logging
 from pathlib import *
 from shutil import copyfile
+import pandas as pd
 from GradeSheet import GradeSheet
 
 class Exams:
@@ -14,11 +15,12 @@ class Exams:
         self.students = students
         self.processed = set()
 
-    def process(self) -> None:
+    def process(self, filename:str) -> None:
         """Process all files in source directory"""	
         for root, dirs,_ in os.walk(self.source):
             for dir in dirs:
                 self._process_file(Path(root, dir))        
+        self._save_unprocessed(filename)
 
 
     def _process_file(self, path) -> None:
@@ -44,10 +46,8 @@ class Exams:
             copyfile(file,p)
 
 
-    def print_unprocessed(self) -> None:
-        """Prints students that were not processed"""
-        print("The following students have not submitted any exams :")
-        for id in self.students:
-            if id not in self.processed:
-                student = self.students[id]
-                print(f"'{student[GradeSheet.FIRST_NAME]} {student[GradeSheet.SURNAME]}' ({id})")
+    def _save_unprocessed(self, filename:str) -> None:
+        """save all students that were not processed"""
+        unprocessed = pd.DataFrame.from_dict(self.students, orient='index')
+        result = unprocessed.loc[~unprocessed.index.isin(self.processed )]
+        result.to_excel(filename, index=False)
