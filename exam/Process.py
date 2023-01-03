@@ -3,9 +3,10 @@ from Exams import *
 import sys
 
 def main(args):
-    grades = GradeSheet('BLOC512 - Fall 2022 - Grades - local.xlsx')
+    grades = GradeSheet('grades.xlsx')
     exams = Exams('data', 'markers', grades.read_students())
-    exams.files()
+    exams.process()
+    exams.print_unprocessed()
 
 if __name__ == '__main__':
     main(sys.argv)
