@@ -46,7 +46,8 @@ class Exams:
 
     def print_unprocessed(self) -> None:
         """Prints students that were not processed"""
+        print("The following students have not submitted any exams :")
         for id in self.students:
             if id not in self.processed:
                 student = self.students[id]
-                print(f"Student {student[GradeSheet.FIRST_NAME]} {student[GradeSheet.SURNAME]} ({id}) not processed!")
+                print(f"'{student[GradeSheet.FIRST_NAME]} {student[GradeSheet.SURNAME]}' ({id})")
