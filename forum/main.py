@@ -1,6 +1,8 @@
 import string
 import sys
+import io
 import pandas as pd
+import seaborn as sns
 import xlsxwriter.utility
 
 # used column names as constants
@@ -146,6 +148,13 @@ def gen_sheet(filename, participation, overview, sheets):
                 posts = pd.concat([posts, data])
             except KeyError:
                 pass  # Do Nothing as the given student is not in the given sheet
+
+    # create plot image
+    buf = io.BytesIO()
+    plot = sns.countplot(x='Forum', data=posts)
+    plot.set(ylabel = "Posts")
+    plot.get_figure().savefig(buf, format='png')
+    worksheet.insert_image('L2', 'Posts', {'image_data': buf})
 
     posts.to_excel(
         writer,
