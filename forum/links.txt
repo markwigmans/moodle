@@ -1,9 +1,0 @@
-select options:
-- Remove HTML
-- Human-readable dates
-
-session 4  - https://courses.unic.ac.cy/mod/forum/export.php?id=123047
-session 6  - https://courses.unic.ac.cy/mod/forum/export.php?id=123048
-session 8  - https://courses.unic.ac.cy/mod/forum/export.php?id=123049
-session 10 - https://courses.unic.ac.cy/mod/forum/export.php?id=123050
-session 12 - https://courses.unic.ac.cy/mod/forum/export.php?id=123051

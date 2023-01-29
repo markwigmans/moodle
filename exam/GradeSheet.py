@@ -1,6 +1,4 @@
 import pandas as pd
-from utils import *
-
 
 class GradeSheet:
     """Process Teams Gradesheet"""
@@ -15,11 +13,12 @@ class GradeSheet:
         self.filename = filename
         self.sheet_name = sheet_name
 
-    def read_students(self):
+    def read(self):
         worksheet = pd.read_excel(self.filename, sheet_name=self.sheet_name)
         worksheet = worksheet.dropna(subset=[self.FIRST_NAME])
         worksheet[self.FIRST_NAME] = worksheet.apply(lambda row: row[self.FIRST_NAME].title(), axis=1)
         worksheet[self.SURNAME] = worksheet.apply(lambda row: row[self.SURNAME].title(), axis=1)
         worksheet.loc[:, self.ID_NUMBER] = worksheet[self.ID_NUMBER].fillna('')
         students = {row[self.ID_NUMBER] : row.to_dict() for _, row in worksheet.iterrows()}
-        return students
+        markers  = {row[self.MARKER] : row.to_dict() for _, row in worksheet.iterrows()}
+        return students, markers

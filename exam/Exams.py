@@ -5,23 +5,28 @@ from pathlib import *
 from shutil import copyfile
 import pandas as pd
 from GradeSheet import GradeSheet
+from Utils import *
+
 
 class Exams:
     """Process student exams"""	
 
-    def __init__(self, source, target, students):
+    def __init__(self, source, target, students, markers):
         self.source = source
         self.target = target
         self.students = students
+        self.markers = markers
         self.processed = set()
         self.exams = set()
         self.student_exams = dict()
 
     def process(self, filename:str) -> None:
         """Process all files in source directory"""	
-        for root, dirs,_ in os.walk(self.source):
+        for root, dirs, files in os.walk(self.source):
+            for file in files:
+                self._process_file(Path(root, file))        
             for dir in dirs:
-                self._process_file(Path(root, dir))        
+                self._process_dir(Path(root, dir))        
         self._save_unprocessed(filename)
 
 
@@ -38,27 +43,47 @@ class Exams:
                 if exam in self.student_exams.get(student, []):
                     overview.loc[student, exam] = 'X'
 
-        overview.to_excel(filename, 
-        columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.MARKER] + exam_columns, 
-        index=False)
+        # create file
+        with pd.ExcelWriter(filename, engine="xlsxwriter") as writer:
+            overview.to_excel(
+                writer,
+                sheet_name="Overview",
+                columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.MARKER] + exam_columns, 
+                index=False)
+            worksheet = writer.sheets['Overview']
+            Utils.set_filter_range(2, 2, worksheet)
 
 
     def _process_file(self, path) -> None:
-        """Process file if it is a student file"""	
+        """Process file if it is a question text"""
+        if re.match(r"Question text",path.stem):
+            for marker in self.markers:
+                self._copy_file(path, marker)
+
+    def _process_dir(self, path) -> None:
+        """Process dir if it is a student directory"""	
         result = re.match(r"(\w{9}) - (.*)",path.stem)
         if result:
             id = result.group(1)
             if self.students.get(id):
                 marker = self.students[id][GradeSheet.MARKER]
-                self._move_file(path, marker)
+                self._copy_dir(path, marker)
                 self._add_exam(id, path)
                 self.processed.add(id)
             else:
                 logging.warning(f"Student '{id}' not found!")
 
 
-    def _move_file(self, path, marker) -> None:
-        """Move file to target directory"""	
+    def _copy_file(self, file, marker) -> None:
+        """copy file to target directory"""	
+        dir = os.path.dirname(file).split(os.sep)[-1]
+        new = Path(self.target, marker, dir)
+        new.mkdir(parents=True, exist_ok=True)
+        copyfile(file, Path(new, file.name))
+
+
+    def _copy_dir(self, path, marker) -> None:
+        """Copy dir to target directory"""	
         questionDir = os.path.dirname(path).split(os.sep)[-1]
         new = Path(self.target, marker, questionDir, path.name)
         new.mkdir(parents=True, exist_ok=True)
