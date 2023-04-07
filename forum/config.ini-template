@@ -1,3 +1,4 @@
-[grades]
-file = grades.xlsx
-worksheet = Quizes - Participation
+[forum.1]
+title = P-1
+description = "Session 4"
+file = discussion-1.csv

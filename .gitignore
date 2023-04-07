@@ -1,9 +1,12 @@
-exam/data/*
-exam/markers/*
-exam/*.zip
 **/*.xlsx
 **/*.csv
 **/__pycache__/*
 config.ini
 
 .idea/**
+
+exam/data/*
+exam/markers/*
+exam/*.zip
+forum/config-516.ini
+forum/config-527.ini

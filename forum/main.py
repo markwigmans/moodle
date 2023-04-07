@@ -8,20 +8,20 @@ import configparser
 def main():
     """Main application"""
     config = configparser.ConfigParser()
-    config.read('default.ini')
-    config.read('config.ini')
+    config.read(['default.ini','config.ini'])
     students_cfg = config['students']
     overview = GradeSheet(students_cfg['file'], students_cfg['worksheet']).read()
-    sheets_list = [
-        ("P-1", "Session 4  - Creating Money", Posts("discussion-1.csv").read()),
-        ("P-2", "Session 6  - Securitization", Posts("discussion-2.csv").read()),
-        ("P-3", "Session 8  - Central bank digital currencies", Posts("discussion-3.csv").read()),
-        ("P-4", "Session 10 - Valuation of Financial Instruments",Posts("discussion-4.csv").read()),
-        ("P-5", "Session 12 - Evaluating Cryptocurrencies", Posts("discussion-5.csv").read()),
-    ]
+
+    sheets_list = []
+    for section in config.sections():
+        if (section.startswith('forum.')):
+            sheets_list.append((config.get(section, 'title'),
+                               config.get(section, 'description'),
+                               Posts(config.get(section, 'file')).read()));
+
     participation = Participation(overview, sheets_list)
     participation.calc()
-    participation.gen_sheet("participation.xlsx")
+    participation.gen_sheet(config.get('output','file'))
 
 if __name__ == '__main__':
     main()
