@@ -7,13 +7,13 @@ The following steps must be performed:
 
 1. Copy **config.ini-template** to **config.ini** and change fields accordingly
 1. Retrieve data from Moodle
-1. Copy all data to config setting [files][data] directory
+1. Copy all data to config setting ( section 'files', element 'data') directory
 1. run main.py
 
 ## "Moodle Download Settings
 
 | Setting                    | Value               | 
-| -------------------------- | ------------------- |
+|----------------------------|---------------------|
 | Set folder hierarchy       | Essay question wise | 
 | Include text response file | Yes                 |
 | Include question text file | Yes                 |
@@ -21,7 +21,7 @@ The following steps must be performed:
 # Configuration
 
 | Group  | Field         | Description                                        | Default            |
-| ------ | ------------- | -------------------------------------------------- | ------------------ |
+|--------|---------------|----------------------------------------------------|--------------------|
 | grades | file          | Input Excel files with students, marker            | grades.xlsx        |
 | grades | worksheet     | Worksheet of *grades.files* file                   | Final Exam         |
 | grades | header        | Number of lines of header line, 0 based            | 0                  |
