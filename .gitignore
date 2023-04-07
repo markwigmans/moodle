@@ -5,3 +5,4 @@ exam/*.zip
 **/*.csv
 **/__pycache__/*
 
+.idea/**
