@@ -7,8 +7,9 @@ Useful for forums were students get marks for posts in a given forum.
 The following steps must be performed:
 
 1. Copy **config.ini-template** to **config.ini** and change fields accordingly
-1. Retrieve data from Moodle
-1. Copy all data to config setting ( section 'files', element 'data') directory
+1. perform for every Moodle forum
+   1. Retrieve data from Moodle
+   1. Copy export data to config setting ( section 'forum.', element 'file') location
 1. run main.py
 
 ## "Moodle Forum Download Settings
@@ -25,13 +26,13 @@ Goto the given forum and choose 'export' with the given settings:
 
 # Configuration
 
-| Group    | Field       | Description                                            | Default                |
-|----------|-------------|--------------------------------------------------------|------------------------|
-| students | file        | Input Excel files with students, marker                | students.xlsx          |
-| students | worksheet   | Worksheet with 'participation' information to be found | Quizes - Participation |
-| output   | file        | output Excel with overall result                       | participation.xlsx     |
-| forum.   | title       | title used as worksheet description                    |                        |
-| forum.   | description | Description of forum to be used in 'readme' worksheet  |                        |
-| forum.   | file        | CSV file with postings of given forum                  |                        |
+| Group    | Field       | Description                                            | Default                 |
+|----------|-------------|--------------------------------------------------------|-------------------------|
+| students | file        | Input Excel files with students, marker                | students.xlsx           |
+| students | worksheet   | Worksheet with 'participation' information to be found | Quizzes - Participation |
+| output   | file        | output Excel with overall result                       | participation.xlsx      |
+| forum.   | title       | title used as worksheet description                    |                         |
+| forum.   | description | Description of forum to be used in 'readme' worksheet  |                         |
+| forum.   | file        | CSV file with postings of given forum                  |                         |
 
 The 'forum.' part can be repeated
