@@ -35,4 +35,4 @@ Goto the given forum and choose 'export' with the given settings:
 | forum.   | description | Description of forum to be used in 'readme' worksheet  |                         |
 | forum.   | file        | CSV file with postings of given forum                  |                         |
 
-The 'forum.' part can be repeated
+The 'forum.' part can be *repeated*. 
