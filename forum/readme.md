@@ -1,4 +1,4 @@
-# Moodle Exam
+# Moodle Forum
 Process the files generated from Moodle forums and create an overview about the posts per student.
 Useful for forums were students get marks for posts in a given forum.
 
