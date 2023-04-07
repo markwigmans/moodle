@@ -6,8 +6,7 @@ import configparser
 
 def main():
     config = configparser.ConfigParser()
-    config.read('default.ini')
-    config.read('config.ini')
+    config.read(['default.ini','config.ini'])
     grades_cfg = config['grades']
     grades = GradeSheet(grades_cfg['file'], grades_cfg['worksheet'], int(grades_cfg['header']))
     students, markers = grades.read()
