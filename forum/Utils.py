@@ -17,4 +17,16 @@ class Utils:
         """Set worksheet autofilter range"""
         if worksheet.dim_rowmax > 0:
             worksheet.autofilter(0, begin_col, worksheet.dim_rowmax, last_col)   
-      
+
+    @staticmethod
+    def get_size_by_values(col:str, df) -> int :
+        """Get size of given column by the maximal value in the given column""" 
+        values = df[col].values
+        longest_string = max(values, key=len)
+        return len(longest_string)  
+    
+    @staticmethod
+    def set_filter_range(begin_col:int, last_col:int, worksheet) -> None:
+        """Set worksheet autofilter range"""
+        if worksheet.dim_rowmax > 0:
+            worksheet.autofilter(0, begin_col, worksheet.dim_rowmax, last_col)
