@@ -26,13 +26,30 @@ Goto the given forum and choose 'export' with the given settings:
 
 # Configuration
 
-| Group    | Field       | Description                                            | Default                 |
-|----------|-------------|--------------------------------------------------------|-------------------------|
-| students | file        | Input Excel files with students, marker                | students.xlsx           |
-| students | worksheet   | Worksheet with 'participation' information to be found | Quizzes - Participation |
-| output   | file        | output Excel with overall result                       | participation.xlsx      |
-| forum.   | title       | title used as worksheet description                    |                         |
-| forum.   | description | Description of forum to be used in 'readme' worksheet  |                         |
-| forum.   | file        | CSV file with postings of given forum                  |                         |
+| Group        | Field       | Description                                            | Default                 |
+|--------------|-------------|--------------------------------------------------------|-------------------------|
+| students     | file        | Input Excel files with students, marker                | students.xlsx           |
+| students     | worksheet   | Worksheet with 'participation' information to be found | Quizzes - Participation |
+| output       | file        | output Excel with overall result                       | participation.xlsx      |
+| forum.(\\.)* | title       | title used as worksheet description                    |                         |
+| forum.(\\.)* | description | Description of forum to be used in 'readme' worksheet  |                         |
+| forum.(\\.)* | file        | CSV file with postings of given forum                  |                         |
 
-The 'forum.' part can be *repeated*. 
+The 'forum.' part the following holds:
+- it must start with **forum.** the rest is only useful for human interpretation;
+- the section name must be unique
+
+## Example
+
+The following example shows how to use the 'forum.'  construction:
+
+      [forum.1]
+      title = P-1
+      description = "Session 4  - Creating Money"
+      file = discussion-1.csv
+
+      [forum.2]
+      title = P-2
+      description = "Session 6  - Securitization"
+      file = discussion-2.csv
+   
