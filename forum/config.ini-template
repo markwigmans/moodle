@@ -1,3 +1,6 @@
+[students]
+file = students.xlsx
+
 [forum.1]
 title = P-1
 description = "Session 4"
