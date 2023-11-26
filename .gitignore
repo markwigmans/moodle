@@ -10,3 +10,6 @@ exam/markers/*
 exam/*.zip
 forum/config-516.ini
 forum/config-527.ini
+essays/data/*
+essays/markers/*
+essays/config-512.ini
