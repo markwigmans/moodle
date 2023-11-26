@@ -11,9 +11,10 @@ from Utils import *
 class Essays:
     """Process student exams"""	
 
-    def __init__(self, source, target, students, markers):
+    def __init__(self, source, target, length:int, students, markers):
         self.source = source
         self.target = target
+        self.length = length
         self.students = students
         self.markers = markers
         self.processed = set()
@@ -83,12 +84,11 @@ class Essays:
 
     def _copy_dir(self, path, marker, index) -> None:
         """Copy dir to target directory"""	
-        questionDir = os.path.dirname(path).split(os.sep)[-1]
-        new = Path(self.target, marker, questionDir)
+        new = Path(self.target, marker)
         new.mkdir(parents=True, exist_ok=True)
         for file in path.iterdir():
             # copy file with index prefix
-            copyfile(file, Path(new, str(index).zfill(2) + '_' + file.name))
+            copyfile(file, Path(new, str(index).zfill(self.length) + '_' + file.name))
 
 
     def _save_unprocessed(self, filename:str) -> None:

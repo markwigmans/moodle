@@ -12,7 +12,7 @@ def main():
     students, markers = grades.read()
 
     files_cfg = config['files']
-    essays = Essays(files_cfg['data'], files_cfg['output'], students, markers)
+    essays = Essays(files_cfg['data'], files_cfg['output'], int(files_cfg['refnr_length']), students, markers)
     essays.process(files_cfg['not_processed'])
     essays.gen_overview(files_cfg['overview'])
 
