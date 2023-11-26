@@ -12,7 +12,7 @@ The following steps must be performed:
    1. Copy export data to config setting ( section 'forum.', element 'file') location
 1. run main.py
 
-## "Moodle Forum Download Settings
+## Moodle Forum Download Settings
 
 Goto the given forum and choose 'export' with the given settings:
 

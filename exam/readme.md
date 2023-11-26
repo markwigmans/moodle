@@ -10,7 +10,7 @@ The following steps must be performed:
 1. Copy all data to config setting ( section 'files', element 'data') directory
 1. run main.py
 
-## "Moodle Download Settings
+## Moodle Download Settings
 
 | Setting                    | Value               | 
 |----------------------------|---------------------|
