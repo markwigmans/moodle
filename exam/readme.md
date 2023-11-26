@@ -21,7 +21,7 @@ The following steps must be performed:
 # Configuration
 
 | Group  | Field         | Description                                        | Default            |
-|--------|---------------|----------------------------------------------------|--------------------|
+|--------|---------------|----------------------------------------------------|-------------------:|
 | grades | file          | Input Excel files with students, marker            | grades.xlsx        |
 | grades | worksheet     | Worksheet of *grades.files* file                   | Final Exam         |
 | grades | header        | Number of lines of header line, 0 based            | 0                  |

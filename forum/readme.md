@@ -27,7 +27,7 @@ Goto the given forum and choose 'export' with the given settings:
 # Configuration
 
 | Group        | Field       | Description                                            | Default                 |
-|--------------|-------------|--------------------------------------------------------|-------------------------|
+|--------------|-------------|--------------------------------------------------------|------------------------:|
 | students     | file        | Input Excel files with students, marker                | students.xlsx           |
 | students     | worksheet   | Worksheet with 'participation' information to be found | Quizzes - Participation |
 | output       | file        | output Excel with overall result                       | participation.xlsx      |
