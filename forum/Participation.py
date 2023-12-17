@@ -12,7 +12,7 @@ class Participation:
     KEY = "key"
     FIRST_NAME = "First name"
     SURNAME = "Surname"
-    MARKER = "Marker"
+    ID_NUMBER = "ID number"
     TOTAL = "Forums"
     FORUM = "Forum"
     SUBJECT = 'Subject'
@@ -23,7 +23,7 @@ class Participation:
 
     def __init__(self, overview, sheets):
         self.overview = overview
-        self.sheets = sheets;
+        self.sheets = sheets
 
     def calc(self):
         """Calculate overall participation excel file"""
@@ -37,7 +37,7 @@ class Participation:
                             self.TOTAL: 0,
                             self.FIRST_NAME: row[ self.FIRST_NAME],
                             self.SURNAME: row[ self.SURNAME],
-                            self.MARKER: row[ self.MARKER]
+                            self.ID_NUMBER: row[ self.ID_NUMBER]
                         },
                         index=[row[ self.KEY]]
                     )])
@@ -52,7 +52,7 @@ class Participation:
                 except KeyError:
                     pass  # Do Nothing as the given student is not in the given sheet
                 df.at[student, sheet] = found
-        self.data = df;
+        self.data = df
     
 
     def gen_sheet(self, filename):
@@ -63,12 +63,12 @@ class Participation:
         # Create readme part
         #
         worksheet = writer.book.add_worksheet("Readme")
-        worksheet.write_string(0, 0, "Paricipation overview")
-        worksheet.write_string(1, 0, "Sheet 'overview' contains per student the number of posts")
-        worksheet.write_string(2, 0, "Sheet 'posts' contains all posts of all students")
+        worksheet.write_string(0, 0, "Participation Overview")
+        worksheet.write_string(2, 0, "Sheet 'overview' contains per student the number of posts")
+        worksheet.write_string(3, 0, "Sheet 'posts' contains all posts of all students")
 
         for index, (sheet, description, _) in enumerate(self.sheets):
-            worksheet.write_string(index + 4, 0, f"{sheet} : {description}")
+            worksheet.write_string(index + 5, 0, f"{sheet} : {description}")
 
         # set workbook formats
         fmt_message = writer.book.add_format({'valign' : 'top','text_wrap' : True})
@@ -84,15 +84,15 @@ class Participation:
         self.data.to_excel(
             writer,
             sheet_name="Overview",
-            columns=[self.FIRST_NAME, self.SURNAME, self.MARKER] +  [h for (h,_,_) in self.sheets] + [self.TOTAL],
+            columns=[self.FIRST_NAME, self.SURNAME, self.ID_NUMBER] +  [h for (h,_,_) in self.sheets] + [self.TOTAL],
             index=False)
         worksheet = writer.sheets['Overview']
         worksheet.freeze_panes(1, 0)
         worksheet.set_column('A:A', Utils.get_size_by_values(self.FIRST_NAME, self.data))
         worksheet.set_column('B:B', Utils.get_size_by_values(self.SURNAME, self.data))
-        column_letter = xlsxwriter.utility.xl_col_to_name(len(self.sheets) + 2)
+        worksheet.set_column('C:C', 15, fmt_number)
+        column_letter = xlsxwriter.utility.xl_col_to_name(len(self.sheets) + 3)
         worksheet.set_column(f"D:{column_letter}", None, fmt_number)
-        Utils.set_filter_range(2, 2, worksheet)
 
         #
         # generate sheets with all posts
@@ -106,7 +106,6 @@ class Participation:
                     data[self.FORUM] = [sheet] * len(data)
                     data[self.FIRST_NAME] = [row[self.FIRST_NAME]] * len(data)
                     data[self.SURNAME] = [row[self.SURNAME]] * len(data)
-                    data[self.MARKER] = [row[self.MARKER]] * len(data)
                     posts = pd.concat([posts, data])
                 except KeyError:
                     pass  # Do Nothing as the given student is not in the given sheet
@@ -121,35 +120,35 @@ class Participation:
         posts.to_excel(
             writer,
             sheet_name="Posts",
-            columns=[self.FIRST_NAME, self.SURNAME, self.MARKER, self.FORUM, self.SUBJECT, self.MESSAGE, self.WORD_COUNT, self.LINK],
+            columns=[self.FIRST_NAME, self.SURNAME, self.FORUM, self.SUBJECT, self.MESSAGE, self.WORD_COUNT, self.LINK],
             index=False)        
 
         worksheet = writer.sheets['Posts']
         worksheet.freeze_panes(1, 0)
-        worksheet.set_column('A:G', None, fmt_text)
-        worksheet.set_column('A:A', Utils.get_size_by_values(self.FIRST_NAME, self.data))
-        worksheet.set_column('B:B', Utils.get_size_by_values(self.SURNAME, self.data))
-        worksheet.set_column('E:E', 40, fmt_message) 
-        worksheet.set_column('F:F', 100, fmt_message)
-        worksheet.set_column('H:H', 60)
-        Utils.set_filter_range(2, 3, worksheet)
+        worksheet.set_column('A:A', Utils.get_size_by_values(self.FIRST_NAME, self.data), fmt_text)
+        worksheet.set_column('B:B', Utils.get_size_by_values(self.SURNAME, self.data), fmt_text)
+        worksheet.set_column('C:C', None, fmt_text)
+        worksheet.set_column('D:D', 40, fmt_message) 
+        worksheet.set_column('E:E', 100, fmt_message)
+        worksheet.set_column('F:F', None, fmt_text)
+        worksheet.set_column('G:G', 60, fmt_text)
+        Utils.set_filter_range(2, 2, worksheet)
 
         #
         # generate sheets with the data
         #
         for sheet,_,students in self.sheets:
             posts.loc[posts[self.FORUM] == sheet].to_excel(writer, sheet_name=sheet,
-                columns=[self.FIRST_NAME, self.SURNAME, self.MARKER, self.SUBJECT, self.MESSAGE, self.WORD_COUNT, self.LINK], 
+                columns=[self.FIRST_NAME, self.SURNAME, self.SUBJECT, self.MESSAGE, self.WORD_COUNT, self.LINK], 
                 index=False)
             worksheet = writer.sheets[sheet]
             worksheet.freeze_panes(1, 0)
-            worksheet.set_column('A:G', None, fmt_text) 
-            worksheet.set_column('A:A', Utils.get_size_by_values(self.FIRST_NAME, self.data))
-            worksheet.set_column('B:B', Utils.get_size_by_values(self.SURNAME, self.data))
-            worksheet.set_column('D:D', 40, fmt_message) 
-            worksheet.set_column('E:E', 100, fmt_message)
-            worksheet.set_column('G:G', 60)
-            Utils.set_filter_range(2, 2, worksheet)
+            worksheet.set_column('A:A', Utils.get_size_by_values(self.FIRST_NAME, self.data), fmt_text)
+            worksheet.set_column('B:B', Utils.get_size_by_values(self.SURNAME, self.data), fmt_text)
+            worksheet.set_column('C:C', 40, fmt_message) 
+            worksheet.set_column('D:D', 100, fmt_message)
+            worksheet.set_column('E:E', None, fmt_text)
+            worksheet.set_column('F:F', 60, fmt_text)
             
         worksheet = writer.sheets['Overview']
         worksheet.activate()
