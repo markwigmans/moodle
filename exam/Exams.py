@@ -7,7 +7,6 @@ import pandas as pd
 from GradeSheet import GradeSheet
 from Utils import *
 
-
 class Exams:
     """Process student exams"""	
 
@@ -45,13 +44,27 @@ class Exams:
 
         # create file
         with pd.ExcelWriter(filename, engine="xlsxwriter") as writer:
+            offset = 3
             overview.to_excel(
                 writer,
                 sheet_name="Overview",
                 columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.MARKER] + exam_columns, 
+                startrow=offset - 1,
                 index=False)
             worksheet = writer.sheets['Overview']
-            Utils.set_filter_range(2, 2, worksheet)
+            fmt_text = writer.book.add_format({'align' : 'center','valign' : 'top'})
+
+            # write total count headers
+            worksheet.freeze_panes(offset, 0)
+            worksheet.write("C1", "Totals")
+            worksheet.set_column(offset, len(exam_columns)+offset, None, fmt_text)
+            for i in range(offset, len(exam_columns)+offset):
+                start_cell = Utils.to_cell(offset, i)
+                end_cell =  Utils.to_cell(worksheet.dim_rowmax, i)
+                worksheet.write(0,i,f"=SUBTOTAL(103, {start_cell}:{end_cell})")
+            worksheet.write(0, len(exam_columns)+offset, f"=SUM(D1:{Utils.to_cell(0,len(exam_columns)+offset-1)})")
+
+            Utils.set_filter_range(2, 2, worksheet, offset-1)
 
 
     def _process_file(self, path) -> None:

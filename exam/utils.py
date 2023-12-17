@@ -1,4 +1,5 @@
 import string
+import xlsxwriter
 
 class Utils:
     """Utility functions"""
@@ -12,7 +13,12 @@ class Utils:
         return ""
 
     @staticmethod
-    def set_filter_range(begin_col:int, last_col:int, worksheet) -> None:
+    def set_filter_range(begin_col:int, last_col:int, worksheet, row:int = 0) -> None:
         """Set worksheet autofilter range"""
         if worksheet.dim_rowmax > 0:
-            worksheet.autofilter(0, begin_col, worksheet.dim_rowmax, last_col)   
+            worksheet.autofilter(row, begin_col, worksheet.dim_rowmax, last_col)   
+
+    @staticmethod
+    def to_cell(col:int, row:int) -> str:
+        """Transform col,row notation to Excel notation"""
+        return xlsxwriter.utility.xl_rowcol_to_cell(col, row)

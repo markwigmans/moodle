@@ -12,7 +12,7 @@ class GradeSheet:
     def __init__(self, filename:str, sheet_name:str, header:int):
         self.filename = filename
         self.sheet_name = sheet_name
-        self.header = header;
+        self.header = header
 
     def read(self):
         worksheet = pd.read_excel(self.filename, sheet_name=self.sheet_name, header=self.header)
