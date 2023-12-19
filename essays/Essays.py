@@ -52,7 +52,7 @@ class Essays:
                 columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.INDEX, GradeSheet.MARKER] + exam_columns, 
                 index=False)
             worksheet = writer.sheets['Overview']
-            Utils.set_filter_range(2, 2, worksheet)
+            Utils.set_filter_range(3, 3, worksheet)
 
 
     def _process_file(self, path) -> None:
