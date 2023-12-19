@@ -29,10 +29,3 @@ Download all submissions for the given activity with the following steps:
 | files  | overview      | Output excel file of process                       | overview.xlsx      |
 | files  | not_processed | Output excel file with students without submission | not_processed.xlsx |
 | files  | refnr_length  | Length of the file prefix number                   | 2                  |
-
-# Python Environment
-Conda is used as package manager. 
-
-The following commands are useful:
-- export environment: `conda env export > environment.yml`
-- import environment: `conda env create --file environment.yml`

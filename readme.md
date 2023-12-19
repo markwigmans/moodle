@@ -12,7 +12,7 @@ The subprojects are able to process particular Moodle files:
 
 # Useful commands
 
-## Package Management
+## Python Environment
 
 Package management is done via [Conda](https://docs.conda.io/projects/conda/en/latest/index.html)
 
