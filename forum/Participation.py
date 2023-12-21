@@ -1,8 +1,6 @@
 from Utils import *
 from Posts import *
-import io
 import pandas as pd
-import seaborn as sns
 import xlsxwriter.utility
 
 class Participation:
@@ -44,7 +42,7 @@ class Participation:
 
         for sheet, _, students in self.sheets:
             for _, row in self.overview.iterrows():
-                found = '-'
+                found = ''
                 student = row[ self.KEY]
                 try:
                     found = len(students.get_group(student))
@@ -74,6 +72,7 @@ class Participation:
         fmt_message = writer.book.add_format({'valign' : 'top','text_wrap' : True})
         fmt_text = writer.book.add_format({'valign' : 'top'})
         fmt_number = writer.book.add_format({'align' : 'center','valign' : 'top'})
+        fmt_perc = writer.book.add_format({'align' : 'center','valign' : 'top', "num_format": "0.0%"})
         fmt_link = writer.book.get_default_url_format()
         fmt_link.set_align('top')
         writer.book.default_url_format = fmt_link
@@ -81,18 +80,26 @@ class Participation:
         #
         # Overview part
         #
+        offset = 2
         self.data.to_excel(
             writer,
             sheet_name="Overview",
             columns=[self.FIRST_NAME, self.SURNAME, self.ID_NUMBER] +  [h for (h,_,_) in self.sheets] + [self.TOTAL],
+            startrow=offset,
             index=False)
         worksheet = writer.sheets['Overview']
-        worksheet.freeze_panes(1, 0)
+        worksheet.freeze_panes(offset+1, 0)
         worksheet.set_column('A:A', Utils.get_size_by_values(self.FIRST_NAME, self.data))
         worksheet.set_column('B:B', Utils.get_size_by_values(self.SURNAME, self.data))
         worksheet.set_column('C:C', 15, fmt_number)
         column_letter = xlsxwriter.utility.xl_col_to_name(len(self.sheets) + 3)
         worksheet.set_column(f"D:{column_letter}", None, fmt_number)
+
+        worksheet.write_string("C1", "Percentage")
+        for i in range(3, len(self.sheets) + 3):
+            col = xlsxwriter.utility.xl_col_to_name(i)
+            size = worksheet.dim_rowmax + 1
+            worksheet.write_formula(f"{col}1", f"=COUNTA({col}{offset+2}:{col}{size})/ROWS({col}{offset+2}:{col}{size})", fmt_perc)
 
         #
         # generate sheets with all posts
@@ -109,13 +116,6 @@ class Participation:
                     posts = pd.concat([posts, data])
                 except KeyError:
                     pass  # Do Nothing as the given student is not in the given sheet
-
-        # create plot image
-        buf = io.BytesIO()
-        plot = sns.countplot(x='Forum', data=posts)
-        plot.set(ylabel = "Posts")
-        plot.get_figure().savefig(buf, format='png')
-        worksheet.insert_image('L2', 'Posts', {'image_data': buf})
 
         posts.to_excel(
             writer,
