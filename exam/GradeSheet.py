@@ -18,9 +18,9 @@ class GradeSheet:
         worksheet = pd.read_excel(self.filename, sheet_name=self.sheet_name, header=self.header)
         # clean data
         worksheet = worksheet.dropna(subset=[self.FIRST_NAME, self.SURNAME])
-        worksheet[self.FIRST_NAME] = worksheet.apply(lambda row: row[self.FIRST_NAME].title(), axis=1)
-        worksheet[self.SURNAME] = worksheet.apply(lambda row: row[self.SURNAME].title(), axis=1)
-        worksheet.loc[:, self.ID_NUMBER] = worksheet[self.ID_NUMBER].fillna('')
+        worksheet[self.FIRST_NAME] = worksheet[self.FIRST_NAME].str.title()
+        worksheet[self.SURNAME] = worksheet[self.SURNAME].str.title()
+        worksheet[self.ID_NUMBER] = worksheet[self.ID_NUMBER].fillna('')
 
         students = {row[self.ID_NUMBER] : row.to_dict() for _, row in worksheet.iterrows()}
         markers  = {row[self.MARKER] : row.to_dict() for _, row in worksheet.iterrows()}

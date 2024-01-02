@@ -49,10 +49,10 @@ class Essays:
             overview.to_excel(
                 writer,
                 sheet_name="Overview",
-                columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.INDEX, GradeSheet.MARKER] + exam_columns, 
+                columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.ID_NUMBER, GradeSheet.INDEX, GradeSheet.MARKER] + exam_columns, 
                 index=False)
             worksheet = writer.sheets['Overview']
-            Utils.set_filter_range(3, 3, worksheet)
+            Utils.set_filter_range(4, 4, worksheet)
 
 
     def _process_file(self, path) -> None:

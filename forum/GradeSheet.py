@@ -21,7 +21,7 @@ class GradeSheet:
         worksheet = pd.read_excel(self.filename, sheet_name=self.sheet_name,  header=self.header)
         # clean data
         worksheet = worksheet.dropna(subset=[self.FIRST_NAME, self.SURNAME])
-        worksheet.loc[:, self.ID_NUMBER] = worksheet[self.ID_NUMBER].fillna('')
+        worksheet[self.ID_NUMBER] = worksheet[self.ID_NUMBER].fillna('')
 
         worksheet[self.KEY] = worksheet.apply(lambda row: Utils.normalize_key(f"{row[self.FIRST_NAME]}{row[self.SURNAME]}"), axis=1)
         worksheet.set_index(self.KEY)
