@@ -18,9 +18,10 @@ class GradeSheet:
 
     def read(self) -> pd.DataFrame:
         """read participation part of grade spreadsheet"""
-        worksheet = pd.read_excel(self.filename, sheet_name=self.sheet_name,  header=self.header)
-        # clean data
-        worksheet = worksheet.dropna(subset=[self.FIRST_NAME, self.SURNAME])
+        worksheet = (pd
+                     .read_excel(self.filename, sheet_name=self.sheet_name,  header=self.header)
+                     .dropna(subset=[self.FIRST_NAME, self.SURNAME]))
+         # clean data
         worksheet[self.ID_NUMBER] = worksheet[self.ID_NUMBER].fillna('')
 
         worksheet[self.KEY] = worksheet.apply(lambda row: Utils.normalize_key(f"{row[self.FIRST_NAME]}{row[self.SURNAME]}"), axis=1)

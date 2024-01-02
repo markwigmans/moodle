@@ -20,10 +20,11 @@ class GradeSheet:
         self.offset = offset
 
     def read(self):
-        worksheet = pd.read_excel(self.filename, sheet_name=self.sheet_name, header=self.header)
+        worksheet = (pd
+                     .read_excel(self.filename, sheet_name=self.sheet_name, header=self.header)
+                     .dropna(subset=[self.FIRST_NAME, self.SURNAME])
+                     .reset_index(names= self.INDEX))
         # clean data
-        worksheet = worksheet.dropna(subset=[self.FIRST_NAME, self.SURNAME])
-        worksheet = worksheet.reset_index(names= self.INDEX)  # add index as column as well
         worksheet[self.INDEX] = worksheet.apply(lambda row: row[self.INDEX] + self.offset, axis=1)
         worksheet[self.FIRST_NAME] = worksheet[self.FIRST_NAME].str.title()
         worksheet[self.SURNAME] = worksheet[self.SURNAME].str.title()
