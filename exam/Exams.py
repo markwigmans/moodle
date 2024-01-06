@@ -5,7 +5,7 @@ from pathlib import *
 from shutil import copyfile
 import pandas as pd
 from GradeSheet import GradeSheet
-from Utils import *
+from Utils import Utils
 
 class Exams:
     """Process student exams"""	
@@ -47,7 +47,7 @@ class Exams:
 
         for student in self.students:
             # I can't add a formula here, pandas changes the content, don't know why
-            overview.loc[student, self.TOTAL] = ''
+            overview.loc[student, self.TOTAL] = 0
             overview.loc[student, self.Q1] = ''
             overview.loc[student, self.Q2] = ''
             overview.loc[student, self.Q3] = ''
