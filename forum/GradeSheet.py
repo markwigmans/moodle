@@ -10,7 +10,6 @@ class GradeSheet:
     SURNAME = "Surname"
     ID_NUMBER = "ID number"
 
-
     def __init__(self, filename:str, sheet_name:str, header:int=0):
         self.filename = filename
         self.sheet_name = sheet_name
