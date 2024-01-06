@@ -10,6 +10,11 @@ from Utils import *
 class Exams:
     """Process student exams"""	
 
+    TOTAL = "Total"
+    Q1 = "Q1"
+    Q2 = "Q2"
+    Q3 = "Q3"
+
     def __init__(self, source, target, students, markers):
         self.source = source
         self.target = target
@@ -37,34 +42,50 @@ class Exams:
         for exam in exam_columns:
             overview.insert(len(overview.columns), exam, None, True)
 
+        y_offset = 3
+        x_offset = 5
+
         for student in self.students:
+            # I can't add a formula here, pandas changes the content, don't know why
+            overview.loc[student, self.TOTAL] = ''
+            overview.loc[student, self.Q1] = ''
+            overview.loc[student, self.Q2] = ''
+            overview.loc[student, self.Q3] = ''
             for exam in exam_columns:
                 if exam in self.student_exams.get(student, []):
                     overview.loc[student, exam] = 'X'
 
         # create file
         with pd.ExcelWriter(filename, engine="xlsxwriter") as writer:
-            offset = 3
             overview.to_excel(
                 writer,
                 sheet_name="Overview",
-                columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.MARKER] + exam_columns, 
-                startrow=offset - 1,
+                columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.ID_NUMBER ,GradeSheet.MARKER, self.TOTAL] + exam_columns + [self.Q1, self.Q2, self.Q3], 
+                startrow=y_offset - 1,
                 index=False)
             worksheet = writer.sheets['Overview']
             fmt_text = writer.book.add_format({'align' : 'center','valign' : 'top'})
 
             # write total count headers
-            worksheet.freeze_panes(offset, 0)
-            worksheet.write("C1", "Totals")
-            worksheet.set_column(offset, len(exam_columns)+offset, None, fmt_text)
-            for i in range(offset, len(exam_columns)+offset):
-                start_cell = Utils.to_cell(offset, i)
+            worksheet.freeze_panes(y_offset, 3)
+            worksheet.write(f"{Utils.to_cell(0,x_offset-1)}", "Totals")
+            worksheet.set_column(x_offset, len(exam_columns)+x_offset, None, fmt_text)
+            for i in range(x_offset, len(exam_columns)+x_offset):
+                start_cell = Utils.to_cell(y_offset, i)
                 end_cell =  Utils.to_cell(worksheet.dim_rowmax, i)
                 worksheet.write(0,i,f"=SUBTOTAL(103, {start_cell}:{end_cell})")
-            worksheet.write(0, len(exam_columns)+offset, f"=SUM(D1:{Utils.to_cell(0,len(exam_columns)+offset-1)})")
+            worksheet.write(0, len(exam_columns)+x_offset, f"=SUM({Utils.to_cell(0,x_offset)}:{Utils.to_cell(0,len(exam_columns)+x_offset-1)})")
 
-            Utils.set_filter_range(2, 2, worksheet, offset-1)
+            # Write formulas
+            for i in range (0, len(self.students)):
+                row = i + y_offset
+                col = len(exam_columns) - 1 + x_offset
+                worksheet.write(row, x_offset - 1, f'=SUM({Utils.to_cell(row,col+1)}:{Utils.to_cell(row,col+3)})')
+                worksheet.write(row,col+1, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},1),"-")', fmt_text)
+                worksheet.write(row,col+2, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},2),"-")', fmt_text)
+                worksheet.write(row,col+3, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},3),"-")', fmt_text)
+
+            Utils.set_filter_range(x_offset-2, x_offset-2, worksheet, y_offset-1)
 
 
     def _process_file(self, path) -> None:

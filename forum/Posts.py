@@ -1,6 +1,5 @@
 import pandas as pd
-from Utils import *
-from GradeSheet import *
+from Utils import Utils
 
 class Posts:
     """Process Moodle Posts"""
@@ -25,13 +24,13 @@ class Posts:
     def read(self) -> pd.core.groupby.generic.DataFrameGroupBy:
         """get students from forum CSV file"""
         df = pd.read_csv(self.filename)
-        # groupBy() can't handle empty DataFrames it seems, so we have to create a trick
+        # groupBy() can't handle empty DataFrames it seems, so we have to check
         if len(df) > 0:
             df = df.rename(columns={'wordcount': self.WORD_COUNT, 'message' : self.MESSAGE, 'subject' : self.SUBJECT})
-            df[self.KEY] = df.apply(lambda row: Utils.normalize_key(row["userfullname"]), axis=1)
-            df[self.LINK] = df.apply(lambda row: f"{self.PREFIX_LINK}{row['discussion']}", axis=1)
-            df[self.SUBJECT] = df[self.SUBJECT].apply(lambda x: x.strip())
-            df[self.MESSAGE] = df[self.MESSAGE].apply(lambda x: x.strip())
+            df[self.KEY] = df['userfullname'].apply(lambda row: Utils.normalize_key(row))
+            df[self.LINK] = df['discussion'].apply(lambda row: f"{self.PREFIX_LINK}{row}")
+            df[self.SUBJECT] = df[self.SUBJECT].str.strip()
+            df[self.MESSAGE] = df[self.MESSAGE].str.strip()
         else:
             df = pd.DataFrame({self.KEY: []})
         return df.groupby(self.KEY)
