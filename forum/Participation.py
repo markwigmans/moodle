@@ -38,7 +38,7 @@ class Participation:
 
         for sheet, _, students in self.sheets:
             for _, row in self.overview.iterrows():
-                found = ''
+                found = 0
                 student = row[ GradeSheet.KEY]
                 try:
                     found = len(students.get_group(student))
@@ -95,7 +95,7 @@ class Participation:
         for i in range(3, len(self.sheets) + 3):
             col = xlsxwriter.utility.xl_col_to_name(i)
             size = worksheet.dim_rowmax + 1
-            worksheet.write_formula(f"{col}1", f"=COUNTA({col}{offset+2}:{col}{size})/ROWS({col}{offset+2}:{col}{size})", fmt_perc)
+            worksheet.write_formula(f"{col}1", f'=COUNTIFS({col}{offset+2}:{col}{size},">0")/ROWS({col}{offset+2}:{col}{size})', fmt_perc)
 
         #
         # generate sheets with all posts
