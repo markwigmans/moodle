@@ -1,31 +1,45 @@
-# Moodle Exam
-Process the files generated from Moodle and create a directory per marker.
 
-# Steps
+# Moodle Exam Processing Guide
 
-The following steps must be performed:
+This guide provides instructions for processing Moodle exam files and organizing them by marker.
 
-1. Copy **config.ini-template** to **config.ini** and change fields accordingly
-1. Retrieve data from Moodle
-1. Copy all data to config setting ( section 'files', element 'data') directory
-1. run main.py
+## Overview
+The tool processes Moodle exam files and creates a directory for each marker, facilitating the evaluation process.
+
+## Steps to Follow
+1. **Configure Settings:**
+   - Rename `config.ini-template` to `config.ini`.
+   - Update the fields in `config.ini` as needed.
+
+2. **Retrieve Data:**
+   - Download the necessary data from Moodle.
+
+3. **Organize Data:**
+   - Place all downloaded data in the directory specified in `config.ini` (under 'files', 'data' element).
+
+4. **Execute Script:**
+   - Run `main.py` to process and organize the data.
 
 ## Moodle Download Settings
 
-| Setting                    | Value               | 
+Configure your Moodle export with these settings:
+
+| Setting                    | Value               |
 |----------------------------|---------------------|
-| Set folder hierarchy       | Essay question wise | 
+| Set folder hierarchy       | Essay question wise |
 | Include text response file | Yes                 |
 | Include question text file | Yes                 |
 
-# Configuration
+## Configuration Parameters
 
-| Group  | Field         | Description                                        | Default            |
-|--------|---------------|----------------------------------------------------|-------------------:|
-| grades | file          | Input Excel files with students, marker            | grades.xlsx        |
-| grades | worksheet     | Worksheet of *grades.files* file                   | Final Exam         |
-| grades | header        | Number of lines of header line, 0 based            | 0                  |
-| files  | data          | Input directory with all the student submissions   | data               |
-| files  | output        | Output directory submissions ordered by marker     | markers            |
-| files  | overview      | Output excel file of process                       | overview.xlsx      |
-| files  | not_processed | Output excel file with students without submission | not_processed.xlsx |
+Configure the `config.ini` file using the following format:
+
+| Group  | Field         | Description                                          | Default            |
+|--------|---------------|------------------------------------------------------|-------------------:|
+| grades | file          | Excel file with student and marker data              | grades.xlsx        |
+| grades | worksheet     | Worksheet name in the *grades.files* file            | Final Exam         |
+| grades | header        | Number of header lines (0-indexed)                   | 0                  |
+| files  | data          | Directory with all student submissions               | data               |
+| files  | output        | Directory for submissions sorted by marker           | markers            |
+| files  | overview      | Excel file summarizing the process                   | overview.xlsx      |
+| files  | not_processed | Excel file listing students without submissions      | not_processed.xlsx |
