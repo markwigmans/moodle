@@ -69,6 +69,7 @@ class Exams:
             # write total count headers
             worksheet.freeze_panes(y_offset, 3)
             worksheet.write(f"{Utils.to_cell(0,x_offset-1)}", "Totals")
+            worksheet.write_comment(f"{Utils.to_cell(0,x_offset-1)}", "Total number of essays to be marked")
             worksheet.set_column(x_offset, len(exam_columns)+x_offset, None, fmt_text)
             for i in range(x_offset, len(exam_columns)+x_offset):
                 start_cell = Utils.to_cell(y_offset, i)
@@ -86,6 +87,7 @@ class Exams:
                 worksheet.write(row,col+2, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},2),"-")', fmt_text)
                 worksheet.write(row,col+3, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},3),"-")', fmt_text)
 
+            worksheet.write_comment(y_offset-1,len(exam_columns) + x_offset, 'Calculate the 3 lowest marks')
             Utils.set_filter_range(x_offset-2, x_offset-2, worksheet, y_offset-1)
 
 
