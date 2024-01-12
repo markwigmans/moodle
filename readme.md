@@ -1,22 +1,28 @@
-# Moodle
 
-Useful python scripts to process [Moodle](https://moodle.org/) output files.
+# Moodle Processing Scripts
 
-The subprojects are able to process particular Moodle files:
+This repository contains useful Python scripts for processing output files from [Moodle](https://moodle.org/). Each subproject is tailored to handle specific types of Moodle files.
 
-| project                      | purpose                                     | 
-|------------------------------|---------------------------------------------| 
-| [essays](./essays/readme.md) | Process essay submission from students      | 
-| [exam](./exam/readme.md)     | Process final exam submission from students | 
-| [forum](./forum/readme.md)   | Process forum posts to be marked            |
+## Subprojects Overview
 
-# Useful commands
+| Project                    | Purpose                                         |
+|----------------------------|-------------------------------------------------|
+| [Essays](./essays/readme.md) | Process essay submissions from students         |
+| [Exam](./exam/readme.md)     | Process final exam submissions from students    |
+| [Forum](./forum/readme.md)   | Process forum posts for marking                 |
 
-## Python Environment
+## Useful Commands
 
-Package management is done via [Conda](https://docs.conda.io/projects/conda/en/latest/index.html)
+### Python Environment Management
 
-- `conda clean -a` : cleanup the environment
-- `conda update --all` : update all dependencies
-- `conda env export > environment.yml` : export environment
-- `conda env create -f environment.yml` : import environment
+Package management is handled via [Conda](https://docs.conda.io/projects/conda/en/latest/index.html). Below are some common commands:
+
+- **Clean Environment:**
+  - `conda clean -a` - Cleanup the Conda environment.
+
+- **Update Dependencies:**
+  - `conda update --all` - Update all Conda dependencies.
+
+- **Export/Import Environment:**
+  - `conda env export > environment.yml` - Export the current environment to a YAML file.
+  - `conda env create -f environment.yml` - Create an environment from an exported YAML file.
