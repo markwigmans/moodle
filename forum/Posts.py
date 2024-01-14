@@ -18,19 +18,17 @@ class Posts:
     PREFIX_LINK = "https://courses.unic.ac.cy/mod/forum/discuss.php?d="
 
 
-    def __init__(self, filename:str):
+    def __init__(self, filename:str, forum:str):
         self.filename = filename
+        self.forum = forum
 
-    def read(self) -> pd.core.groupby.generic.DataFrameGroupBy:
-        """get students from forum CSV file"""
+    def read(self):
+        """get posts from forum CSV file"""
         df = pd.read_csv(self.filename)
-        # groupBy() can't handle empty DataFrames it seems, so we have to check
-        if len(df) > 0:
-            df = df.rename(columns={'wordcount': self.WORD_COUNT, 'message' : self.MESSAGE, 'subject' : self.SUBJECT})
-            df[self.KEY] = df['userfullname'].apply(lambda row: Utils.normalize_key(row))
-            df[self.LINK] = df['discussion'].apply(lambda row: f"{self.PREFIX_LINK}{row}")
-            df[self.SUBJECT] = df[self.SUBJECT].str.strip()
-            df[self.MESSAGE] = df[self.MESSAGE].str.strip()
-        else:
-            df = pd.DataFrame({self.KEY: []})
-        return df.groupby(self.KEY)
+        df = df.rename(columns={'wordcount': self.WORD_COUNT, 'message' : self.MESSAGE, 'subject' : self.SUBJECT})
+        df[self.KEY] = df['userfullname'].apply(lambda row: Utils.normalize_key(row))
+        df[self.LINK] = df['discussion'].apply(lambda row: f"{self.PREFIX_LINK}{row}")
+        df[self.SUBJECT] = df[self.SUBJECT].str.strip()
+        df[self.MESSAGE] = df[self.MESSAGE].str.strip()
+        df[self.FORUM] = self.forum
+        return df

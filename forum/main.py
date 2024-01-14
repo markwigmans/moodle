@@ -10,17 +10,17 @@ def main():
     config = configparser.ConfigParser()
     config.read(['default.ini','config.ini'])
     students_cfg = config['students']
-    overview = GradeSheet(students_cfg['file'], students_cfg['worksheet']).read()
+    gradeSheet = GradeSheet(students_cfg['file'], students_cfg['worksheet']).read()
 
     sheets_list = []
     for section in config.sections():
         if (section.startswith('forum.')):
-            sheets_list.append((config.get(section, 'title'),
+            title = config.get(section, 'title')
+            sheets_list.append((title,
                                config.get(section, 'description'),
-                               Posts(config.get(section, 'file')).read()));
+                               Posts(config.get(section, 'file'), title).read()))
 
-    participation = Participation(overview, sheets_list)
-    participation.calc()
+    participation = Participation(gradeSheet, sheets_list)
     participation.gen_sheet(config.get('output','file'))
 
 if __name__ == '__main__':
