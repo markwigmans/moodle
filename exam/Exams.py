@@ -88,7 +88,7 @@ class Exams:
                 worksheet.write(row,col+3, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},3),"-")', fmt_text)
 
             worksheet.write_comment(y_offset-1,len(exam_columns) + x_offset, 'Calculate the 3 lowest marks')
-            Utils.set_filter_range(x_offset-2, x_offset-2, worksheet, y_offset-1)
+            Utils.set_filter_range(x_offset-2, len(exam_columns) - 1 + x_offset, worksheet, y_offset-1)
 
 
     def _process_file(self, path) -> None:
