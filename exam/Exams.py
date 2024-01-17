@@ -25,13 +25,13 @@ class Exams:
         self.exams = set()
         self.student_exams = dict()
 
-    def process(self, filename:str) -> None:
+    def process(self, filename:str, min_length: int) -> None:
         """Process all files in source directory"""	
         for root, dirs, files in os.walk(self.source):
             for file in files:
                 self._process_file(Path(root, file))        
             for dir in dirs:
-                self._process_dir(Path(root, dir))        
+                self._process_dir(Path(root, dir), min_length)        
         self._save_unprocessed(filename)
 
 
@@ -97,22 +97,26 @@ class Exams:
             Utils.set_filter_range(x_offset-2, len(exam_columns) - 1 + x_offset, worksheet, y_offset-1)
 
 
-    def _process_file(self, path) -> None:
+    def _process_file(self, path: Path) -> None:
         """Process file if it is a question text"""
         if re.match(r"Question text",path.stem):
             for marker in self.markers:
                 self._copy_file(path, marker)
 
-    def _process_dir(self, path) -> None:
+    def _process_dir(self, path: Path, min_length: int) -> None:
         """Process dir if it is a student directory"""	
         result = re.match(r"(\w{9}) - (.*)",path.stem)
         if result:
             id = result.group(1)
             if self.students.get(id):
-                marker = self.students[id][GradeSheet.MARKER]
-                self._copy_dir(path, marker)
-                self._add_exam(id, path)
-                self.processed.add(id)
+                if self._dir_meets_size(path, min_length):
+                    marker = self.students[id][GradeSheet.MARKER]
+                    self._dir_meets_size(path, 50)
+                    self._copy_dir(path, marker)
+                    self._add_exam(id, path)
+                    self.processed.add(id)
+                else:
+                    logging.info(f"Under minimal length({min_length}): '{path}'")    
             else:
                 logging.warning(f"Student '{id}' not found!")
 
@@ -133,6 +137,18 @@ class Exams:
         for file in path.iterdir():
             p = Path(new, file.name)
             copyfile(file,p)
+
+    def _dir_meets_size(self, path: Path, min_length:int) -> bool:
+        """Check if any file in the directory meets the size requirement"""
+        for file_path in path.iterdir():
+            if file_path.is_file():
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    content = file.read().strip()
+                    logging.debug(f"len is: {len(content)} : {content[:20]}")
+                    if len(content) >= min_length:
+                        return True
+        return False
+
 
 
     def _save_unprocessed(self, filename:str) -> None:

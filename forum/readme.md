@@ -36,14 +36,14 @@ When exporting data from a Moodle forum, use the following settings:
 
 The `config.ini` file should be structured as follows:
 
-| Group        | Field       | Description                                              | Default                 |
-|--------------|-------------|----------------------------------------------------------|-------------------------|
-| students     | file        | Excel file with student and marker data                  | students.xlsx           |
-| students     | worksheet   | Worksheet name with 'participation' information          | Quizzes - Participation |
-| output       | file        | Excel file for the compiled results                      | participation.xlsx      |
-| forum.*      | title       | Title for the worksheet description                      | (none)                  |
-| forum.*      | description | Description of the forum for the 'readme' worksheet      | (none)                  |
-| forum.*      | file        | CSV file containing forum postings                       | (none)                  |
+| Group        | Field       | Description   | Default         |
+|--------------|-------------|---------------|-----------------|
+| students     | file        | Excel file with student and marker data | students.xlsx |
+| students     | worksheet   | Worksheet name with 'participation' information | Participation |
+| output       | file        | Excel file for the compiled results | participation.xlsx |
+| forum.*      | title       | Title for the worksheet description | (none) |
+| forum.*      | description | Description of the forum for the 'readme' worksheet | (none) |
+| forum.*      | file        | CSV file containing forum postings | (none) |
 
 ### Note:
 - Each forum configuration block should start with `forum.` followed by a unique identifier.

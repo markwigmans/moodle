@@ -36,10 +36,11 @@ Configure the `config.ini` file using the following format:
 
 | Group  | Field         | Description                                          | Default            |
 |--------|---------------|------------------------------------------------------|-------------------:|
-| grades | file          | Excel file with student and marker data              | grades.xlsx        |
+| grades | file          | Excel file with student and marker data              |                    |
 | grades | worksheet     | Worksheet name in the *grades.files* file            | Final Exam         |
 | grades | header        | Number of header lines (0-indexed)                   | 0                  |
 | files  | data          | Directory with all student submissions               | data               |
 | files  | output        | Directory for submissions sorted by marker           | markers            |
 | files  | overview      | Excel file summarizing the process                   | overview.xlsx      |
 | files  | not_processed | Excel file listing students without submissions      | not_processed.xlsx |
+| files  | min_length    | Minimum length of text in a exam to make it count    | 50                 |
