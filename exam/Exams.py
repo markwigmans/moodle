@@ -79,7 +79,8 @@ class Exams:
                 start_cell = Utils.to_cell(y_offset, i)
                 end_cell =  Utils.to_cell(worksheet.dim_rowmax, i)
                 # calculate work to do
-                worksheet.write(0,i,f"=SUBTOTAL(103,{start_cell}:{end_cell})-SUBTOTAL(102,{start_cell}:{end_cell})")
+                r = f"{start_cell}:{end_cell}"
+                worksheet.write(0,i,f'=SUMPRODUCT(SUBTOTAL(3,OFFSET({r},ROW({r})-ROW({start_cell}),0,1)),--({r}="X"))')
             worksheet.write(0, len(exam_columns)+x_offset, f"=SUM({Utils.to_cell(0,x_offset)}:{Utils.to_cell(0,len(exam_columns)+x_offset-1)})")
 
             # Write formulas
