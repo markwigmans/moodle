@@ -68,7 +68,9 @@ class Exams:
             worksheet = writer.sheets['Overview']
 
             fmt_text = writer.book.add_format({'align' : 'center','valign' : 'top'})
+            fmt_bold_text = writer.book.add_format({'align' : 'center','valign' : 'top', 'bold': True })
             fmt_signal_text = writer.book.add_format({'valign' : 'top', 'bg_color': 'yellow'})
+            fmt_mark_text = writer.book.add_format({'valign' : 'top', 'bg_color': '#92D050'})  # light green
 
             # write total count headers
             worksheet.freeze_panes(y_offset, 3)
@@ -81,13 +83,14 @@ class Exams:
                 # calculate work to do
                 r = f"{start_cell}:{end_cell}"
                 worksheet.write(0,i,f'=SUMPRODUCT(SUBTOTAL(3,OFFSET({r},ROW({r})-ROW({start_cell}),0,1)),--({r}="X"))')
+                worksheet.conditional_format(f"{Utils.to_cell(0,i)}", {'type': 'cell', 'criteria': '>', 'value': 0, 'format': fmt_mark_text})
             worksheet.write(0, len(exam_columns)+x_offset, f"=SUM({Utils.to_cell(0,x_offset)}:{Utils.to_cell(0,len(exam_columns)+x_offset-1)})")
 
             # Write formulas
             for i in range (0, len(self.students)):
                 row = i + y_offset
                 col = len(exam_columns) - 1 + x_offset
-                worksheet.write(row, x_offset - 1, f'=SUM({Utils.to_cell(row,col+1)}:{Utils.to_cell(row,col+3)})')
+                worksheet.write(row, x_offset - 1, f'=SUM({Utils.to_cell(row,col+1)}:{Utils.to_cell(row,col+3)})', fmt_bold_text)
                 worksheet.write(row,col+1, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},1),"-")', fmt_text)
                 worksheet.write(row,col+2, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},2),"-")', fmt_text)
                 worksheet.write(row,col+3, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},3),"-")', fmt_text)
