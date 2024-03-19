@@ -30,6 +30,7 @@ class GradeSheet:
         worksheet[self.SURNAME] = worksheet[self.SURNAME].str.title()
         worksheet[self.FULL_NAME] = worksheet[self.FIRST_NAME] + " " + worksheet[self.SURNAME]
         worksheet[self.ID_NUMBER] = worksheet[self.ID_NUMBER].fillna('')
+        worksheet[self.MARKER] = worksheet[self.MARKER].fillna('-')
 
         students = {Utils.normalize_key(row[self.FULL_NAME]) : row.to_dict() for _, row in worksheet.iterrows()}
         markers  = {row[self.MARKER] : row.to_dict() for _, row in worksheet.iterrows()}
