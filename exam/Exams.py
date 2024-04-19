@@ -11,9 +11,6 @@ class Exams:
     """Process student exams"""	
 
     TOTAL = "Total"
-    Q1 = "Q1"
-    Q2 = "Q2"
-    Q3 = "Q3"
     EXAMS = "#Exams"
 
     def __init__(self, source, target, students, markers):
@@ -49,9 +46,6 @@ class Exams:
         for student in self.students:
             # I can't add a formula here, pandas changes the content, don't know why
             overview.loc[student, self.TOTAL] = 0
-            overview.loc[student, self.Q1] = ''
-            overview.loc[student, self.Q2] = ''
-            overview.loc[student, self.Q3] = ''
             overview.loc[student, self.EXAMS] = ''
             for exam in exam_columns:
                 if exam in self.student_exams.get(student, []):
@@ -62,7 +56,7 @@ class Exams:
             overview.to_excel(
                 writer,
                 sheet_name="Overview",
-                columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.ID_NUMBER ,GradeSheet.MARKER, self.TOTAL] + exam_columns + [self.Q1, self.Q2, self.Q3, self.EXAMS], 
+                columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.ID_NUMBER ,GradeSheet.MARKER, self.TOTAL] + exam_columns + [self.EXAMS], 
                 startrow=y_offset - 1,
                 index=False)
             worksheet = writer.sheets['Overview']
@@ -90,14 +84,12 @@ class Exams:
             for i in range (0, len(self.students)):
                 row = i + y_offset
                 col = len(exam_columns) - 1 + x_offset
-                worksheet.write(row, x_offset - 1, f'=SUM({Utils.to_cell(row,col+1)}:{Utils.to_cell(row,col+3)})', fmt_bold_text)
-                worksheet.write(row,col+1, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},1),"-")', fmt_text)
-                worksheet.write(row,col+2, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},2),"-")', fmt_text)
-                worksheet.write(row,col+3, f'=IFERROR(SMALL({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)},3),"-")', fmt_text)
-                worksheet.write(row,col+4, f'=COUNTA({Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)})', fmt_text)
-                worksheet.conditional_format(f"{Utils.to_cell(row,col+4)}", {'type': 'cell', 'criteria': '!=', 'value': 3, 'format': fmt_signal_text})
+                work_range = f'{Utils.to_cell(row,x_offset)}:{Utils.to_cell(row,col)}'
+                # if lowest values, use filter and sort: https://www.spreadsheetclass.com/excel-sort-filter-functions/
+                worksheet.write(row, x_offset - 1, f'=IFERROR(SUM(TAKE(FILTER({work_range},ISNUMBER({work_range})),,3)),0)', fmt_bold_text)
+                worksheet.write(row,col+1, f'=COUNTA({work_range})', fmt_text)
+                worksheet.conditional_format(f"{Utils.to_cell(row,col+1)}", {'type': 'cell', 'criteria': '!=', 'value': 3, 'format': fmt_signal_text})
 
-            worksheet.write_comment(y_offset-1,len(exam_columns) + x_offset, 'Calculate the 3 lowest marks')
             Utils.set_filter_range(x_offset-2, len(exam_columns) - 1 + x_offset, worksheet, y_offset-1)
 
 
