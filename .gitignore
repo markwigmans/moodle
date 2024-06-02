@@ -8,6 +8,7 @@ config.ini
 exam/data/*
 exam/markers/*
 exam/*.zip
+exam/archive/*
 essays/data/*
 essays/markers/*
 essays/archive/*

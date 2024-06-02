@@ -76,7 +76,7 @@ class Exams:
                 end_cell =  Utils.to_cell(worksheet.dim_rowmax, i)
                 # calculate work to do
                 r = f"{start_cell}:{end_cell}"
-                worksheet.write(0,i,f'=SUMPRODUCT(SUBTOTAL(3,OFFSET({r},ROW({r})-ROW({start_cell}),0,1)),--({r}="X"))')
+                worksheet.write(0,i,f'=SUMPRODUCT(SUBTOTAL(3,OFFSET({r},ROW({r})-MIN(ROW({r})),0,1)),--({r}="X"))')
                 worksheet.conditional_format(f"{Utils.to_cell(0,i)}", {'type': 'cell', 'criteria': '>', 'value': 0, 'format': fmt_mark_text})
             worksheet.write(0, len(exam_columns)+x_offset, f"=SUM({Utils.to_cell(0,x_offset)}:{Utils.to_cell(0,len(exam_columns)+x_offset-1)})")
 
