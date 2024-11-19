@@ -61,7 +61,7 @@ class Essays:
 
     def _process_dir(self, path) -> None:
         """Process dir if it is a student directory"""	
-        result = re.match(r"(.*)_([0-9]+)_assignsubmission_file_",path.stem)
+        result = re.match(r"(.*)_([0-9]+)_assignsubmission_file(.*)",path.stem)
         if result:
             id = Utils.normalize_key(result.group(1))
             if self.students.get(id):
