@@ -24,26 +24,26 @@ The tool processes files exported from Moodle forums and compiles an overview of
 
 When exporting data from a Moodle forum, use the following settings:
 
-| Setting              | Value                     | 
-|----------------------|---------------------------|
+| Setting              | Value                     |
+| -------------------- | ------------------------- |
 | Users                | All users (default)       |
 | Discussions          | All discussions (default) |
 | Format               | CSV (default)             |
-| Remove HTML          | Yes                       | 
+| Remove HTML          | Yes                       |
 | Human-readable dates | Yes                       |
 
 ## Configuration File Format
 
 The `config.ini` file should be structured as follows:
 
-| Group        | Field       | Description   | Default         |
-|--------------|-------------|---------------|-----------------|
-| students     | file        | Excel file with student and marker data | students.xlsx |
-| students     | worksheet   | Worksheet name with 'participation' information | Participation |
-| output       | file        | Excel file for the compiled results | participation.xlsx |
-| forum.*      | title       | Title for the worksheet description | (none) |
-| forum.*      | description | Description of the forum for the 'readme' worksheet | (none) |
-| forum.*      | file        | CSV file containing forum postings | (none) |
+| Group    | Field       | Description                                         | Default            |
+| -------- | ----------- | --------------------------------------------------- | ------------------ |
+| students | file        | Excel file with student and marker data             |                    |
+| students | worksheet   | Worksheet name with 'participation' information     | Participation      |
+| output   | file        | Excel file for the compiled results                 | participation.xlsx |
+| forum.*  | title       | Title for the worksheet description                 | (none)             |
+| forum.*  | description | Description of the forum for the 'readme' worksheet | (none)             |
+| forum.*  | file        | CSV file containing forum postings                  | (none)             |
 
 ### Note:
 - Each forum configuration block should start with `forum.` followed by a unique identifier.

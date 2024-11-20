@@ -31,14 +31,14 @@ To download submissions for a specific assignment, follow these steps:
 
 Structure the `config.ini` file using the following settings:
 
-| Group  | Field         | Description                                              | Default            |
-|--------|---------------|----------------------------------------------------------|-------------------:|
-| grades | file          | Excel file with student and marker data                  |                    |
-| grades | worksheet     | Worksheet name in the *grades.files* file                | Essay Assignment   |
-| grades | header        | Number of header lines (0-indexed)                       | 0                  |
-| grades | id_offset     | Offset for the reference number prefix                   | 1                  | 
-| files  | data          | Directory with all student submissions                   | data               |
-| files  | output        | Directory for organized submissions by marker            | markers            |
-| files  | overview      | Excel file summarizing the process                       | overview.xlsx      |
-| files  | not_processed | Excel file listing students without submissions          | not_processed.xlsx |
-| files  | refnr_length  | Length of the file prefix number                         | 2                  |
+| Group  | Field         | Description                                     |            Default |
+| ------ | ------------- | ----------------------------------------------- | -----------------: |
+| grades | file          | Excel file with student and marker data         |                    |
+| grades | worksheet     | Worksheet name in the *grades.files* file       |   Essay Assignment |
+| grades | header        | Number of header lines (0-indexed)              |                  0 |
+| grades | id_offset     | Offset for the reference number prefix          |                  1 |
+| files  | data          | Directory with all student submissions          |               data |
+| files  | output        | Directory for organized submissions by marker   |            markers |
+| files  | overview      | Excel file summarizing the process              |      overview.xlsx |
+| files  | not_processed | Excel file listing students without submissions | not_processed.xlsx |
+| files  | refnr_length  | Length of the file prefix number                |                  2 |
