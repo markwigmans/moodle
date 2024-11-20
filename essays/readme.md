@@ -33,7 +33,7 @@ Structure the `config.ini` file using the following settings:
 
 | Group  | Field         | Description                                              | Default            |
 |--------|---------------|----------------------------------------------------------|-------------------:|
-| grades | file          | Excel file with student and marker data                  | grades.xlsx        |
+| grades | file          | Excel file with student and marker data                  |                    |
 | grades | worksheet     | Worksheet name in the *grades.files* file                | Essay Assignment   |
 | grades | header        | Number of header lines (0-indexed)                       | 0                  |
 | grades | id_offset     | Offset for the reference number prefix                   | 1                  | 
