@@ -143,6 +143,8 @@ class Exams:
                     logging.debug(f"len is: {len(content)} : {content[:20]}")
                     if len(content) >= min_length:
                         return True
+            else:
+              logging.error(f"File: '{file_path}' is NOT a file")           
         return False
 
 
