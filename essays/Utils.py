@@ -1,15 +1,13 @@
-import string
+import re
 
 class Utils:
     """Utility functions"""
 
     @staticmethod
     def normalize_key(key: str) -> str:
-        """Remove all specified characters from the input string and return the result in lowercase."""
+        """Standardize the key by removing all non a-z characters and convert to lowercase."""
         if key is not None:
-            remove_chars = " '"
-            translation_table = str.maketrans("", "", remove_chars)
-            return key.translate(translation_table).lower()
+             return re.sub(r'[^a-zA-Z]', '', key).lower()
         return ""
 
     @staticmethod
