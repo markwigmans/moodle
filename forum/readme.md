@@ -47,7 +47,6 @@ The `config.ini` file should be structured as follows:
 
 ### Note:
 - Each forum configuration block should start with `forum.` followed by a unique identifier.
-- The part after `forum.` is for human readability and does not affect the processing.
 
 ## Configuration Example
 
