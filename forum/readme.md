@@ -41,9 +41,9 @@ The `config.ini` file should be structured as follows:
 | students | file        | Excel file with student and marker data             |                    |
 | students | worksheet   | Worksheet name with 'participation' information     | Participation      |
 | output   | file        | Excel file for the compiled results                 | participation.xlsx |
-| forum.*  | title       | Title for the worksheet description                 | (none)             |
-| forum.*  | description | Description of the forum for the 'readme' worksheet | (none)             |
-| forum.*  | file        | CSV file containing forum postings                  | (none)             |
+| forum.*  | title       | Title for the worksheet description                 |                    |
+| forum.*  | description | Description of the forum for the 'readme' worksheet |                    |
+| forum.*  | file        | CSV file containing forum postings                  |                    |
 
 ### Note:
 - Each forum configuration block should start with `forum.` followed by a unique identifier.
