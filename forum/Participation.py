@@ -67,8 +67,6 @@ class Participation:
         column_letter = xlsxwriter.utility.xl_col_to_name(len(self.sheets) + 3)
         worksheet.set_column(f"D:{column_letter}", None, fmt_number)
 
-        grouped_count = self.posts.groupby(by=self.FORUM).size()
-
         #
         # Generate header 'Overview'
         #
@@ -76,9 +74,10 @@ class Participation:
         worksheet.write_string("C2", "#Unprocessed")
         for counter, (sheet,_,_) in enumerate(self.sheets):
             col = xlsxwriter.utility.xl_col_to_name(counter+3)
+            sheet_count = len(self.posts[self.posts[self.FORUM] == sheet])
             size = worksheet.dim_rowmax + 1
             worksheet.write_formula(f"{col}1", f'=COUNTIFS({col}{offset+2}:{col}{size},">0")/ROWS({col}{offset+2}:{col}{size})', fmt_perc)
-            worksheet.write_formula(f"{col}2", f'={grouped_count[sheet]} - SUM({col}{offset+2}:{col}{size})', fmt_number)
+            worksheet.write_formula(f"{col}2", f'={sheet_count} - SUM({col}{offset+2}:{col}{size})', fmt_number)
             worksheet.conditional_format(f"{col}2", {'type': 'cell', 'criteria': 'greater than', 'value': 0, 'format': fmt_red_text})
 
         #

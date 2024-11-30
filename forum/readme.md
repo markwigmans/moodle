@@ -28,6 +28,8 @@ When exporting data from a Moodle forum, use the following settings:
 | -------------------- | ------------------------- |
 | Users                | All users (default)       |
 | Discussions          | All discussions (default) |
+| Posts from           | disable                   |
+| Posts to             | disable                   |
 | Format               | CSV (default)             |
 | Remove HTML          | Yes                       |
 | Human-readable dates | Yes                       |
