@@ -60,8 +60,8 @@ class Participation:
             index=False)
         worksheet = writer.sheets['Overview']
         worksheet.freeze_panes(offset + 1, 0)
-        worksheet.set_column('A:A', Utils.get_size_by_values(GradeSheet.FIRST_NAME, self.data))
-        worksheet.set_column('B:B', Utils.get_size_by_values(GradeSheet.SURNAME, self.data))
+        worksheet.set_column('A:A', Utils.get_max_column_width(GradeSheet.FIRST_NAME, self.data))
+        worksheet.set_column('B:B', Utils.get_max_column_width(GradeSheet.SURNAME, self.data))
         worksheet.set_column('C:C', 15, fmt_number)
         column_letter = xlsxwriter.utility.xl_col_to_name(len(self.sheets) + 3)
         worksheet.set_column(f"D:{column_letter}", None, fmt_number)
@@ -94,8 +94,8 @@ class Participation:
 
         worksheet = writer.sheets['Posts']
         worksheet.freeze_panes(1, 0)
-        worksheet.set_column('A:A', Utils.get_size_by_values(GradeSheet.FIRST_NAME, self.data), fmt_text)
-        worksheet.set_column('B:B', Utils.get_size_by_values(GradeSheet.SURNAME, self.data), fmt_text)
+        worksheet.set_column('A:A', Utils.get_max_column_width(GradeSheet.FIRST_NAME, self.data), fmt_text)
+        worksheet.set_column('B:B', Utils.get_max_column_width(GradeSheet.SURNAME, self.data), fmt_text)
         worksheet.set_column('C:C', None, fmt_text)
         worksheet.set_column('D:D', 40, fmt_message)
         worksheet.set_column('E:E', 100, fmt_message)

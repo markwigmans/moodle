@@ -10,7 +10,7 @@ def main():
     config = configparser.ConfigParser()
     config.read(['default.ini', 'config.ini'])
     students_cfg = config['students']
-    gradeSheet = GradeSheet(students_cfg['file'], students_cfg['worksheet']).read()
+    grade_sheet = GradeSheet(students_cfg['file'], students_cfg['worksheet']).read()
 
     sheets_list = []
     for section in config.sections():
@@ -20,7 +20,7 @@ def main():
                                 config.get(section, 'description'),
                                 Posts(config.get(section, 'file'), title).read()))
 
-    participation = Participation(gradeSheet, sheets_list)
+    participation = Participation(grade_sheet, sheets_list)
     participation.gen_sheet(config.get('output', 'file'))
 
 
