@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class GradeSheet:
     """
     A class to process a gradesheet for teams.
@@ -17,14 +18,14 @@ class GradeSheet:
     MARKER = "Marker"
     DEFAULT_MARKER = "-"
 
-    def __init__(self, filename:str, sheet_name:str, header:int):
+    def __init__(self, filename: str, sheet_name: str, header: int):
         self.filename = filename
         self.sheet_name = sheet_name
         self.header = header
 
     def read(self):
         """
-        Reads and processes the gradesheet.
+        Reads and processes the grade sheet.
 
         Returns:
             tuple: A tuple containing dictionaries of students and markers.
@@ -39,6 +40,6 @@ class GradeSheet:
         worksheet[self.MARKER] = worksheet[self.MARKER].fillna(self.DEFAULT_MARKER)
 
         # Create dictionaries for students and markers
-        students = {row[self.ID_NUMBER] : row.to_dict() for _, row in worksheet.iterrows()}
-        markers  = {row[self.MARKER] : row.to_dict() for _, row in worksheet.iterrows()}
+        students = {row[self.ID_NUMBER]: row.to_dict() for _, row in worksheet.iterrows()}
+        markers = {row[self.MARKER]: row.to_dict() for _, row in worksheet.iterrows()}
         return students, markers

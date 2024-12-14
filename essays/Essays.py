@@ -1,17 +1,19 @@
+import logging
 import os
 import re
-import logging
 from pathlib import *
 from shutil import copyfile
+
 import pandas as pd
+
 from GradeSheet import GradeSheet
-from Utils import *
+from utils.Utils import Utils
 
 
 class Essays:
-    """Process student exams"""	
+    """Process student exams"""
 
-    def __init__(self, source, target, length:int, students, markers):
+    def __init__(self, source, target, length: int, students, markers):
         self.source = source
         self.target = target
         self.length = length
@@ -21,17 +23,16 @@ class Essays:
         self.exams = set()
         self.student_exams = dict()
 
-    def process(self, filename:str) -> None:
-        """Process all files in source directory"""	
+    def process(self, filename: str) -> None:
+        """Process all files in source directory"""
         for root, dirs, files in os.walk(self.source):
             for file in files:
-                self._process_file(Path(root, file))        
+                self._process_file(Path(root, file))
             for dir in dirs:
-                self._process_dir(Path(root, dir))        
+                self._process_dir(Path(root, dir))
         self._save_unprocessed(filename)
 
-
-    def gen_overview(self, filename:str) -> None:
+    def gen_overview(self, filename: str) -> None:
         """Generate overview of all exams"""
         overview = pd.DataFrame.from_dict(self.students, orient='index')
         exam_columns = sorted(self.exams)
@@ -49,19 +50,18 @@ class Essays:
             overview.to_excel(
                 writer,
                 sheet_name="Overview",
-                columns= [GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.ID_NUMBER, GradeSheet.INDEX, GradeSheet.MARKER] + exam_columns, 
+                columns=[GradeSheet.FIRST_NAME, GradeSheet.SURNAME, GradeSheet.ID_NUMBER, GradeSheet.INDEX,
+                         GradeSheet.MARKER] + exam_columns,
                 index=False)
             worksheet = writer.sheets['Overview']
             Utils.set_filter_range(4, 5, worksheet)
 
-
     def _process_file(self, path) -> None:
         """Do nothing"""
 
-
     def _process_dir(self, path) -> None:
-        """Process dir if it is a student directory"""	
-        result = re.match(r"(.*)_([0-9]+)_assignsubmission_file(.*)",path.stem)
+        """Process dir if it is a student directory"""
+        result = re.match(r"(.*)_([0-9]+)_assignsubmission_file(.*)", path.stem)
         if result:
             id = Utils.normalize_key(result.group(1))
             if self.students.get(id):
@@ -73,28 +73,25 @@ class Essays:
             else:
                 logging.warning(f"Student '{id}' not found!")
 
-
     def _copy_file(self, file, marker) -> None:
-        """copy file to target directory"""	
+        """copy file to target directory"""
         dir = os.path.dirname(file).split(os.sep)[-1]
         new = Path(self.target, marker, dir)
         new.mkdir(parents=True, exist_ok=True)
         copyfile(file, Path(new, file.name))
 
-
     def _copy_dir(self, path, marker, index) -> None:
-        """Copy dir to target directory"""	
+        """Copy dir to target directory"""
         new = Path(self.target, marker)
         new.mkdir(parents=True, exist_ok=True)
         for file in path.iterdir():
             # copy file with index prefix
             copyfile(file, Path(new, str(index).zfill(self.length) + '_' + file.name))
 
-
-    def _save_unprocessed(self, filename:str) -> None:
+    def _save_unprocessed(self, filename: str) -> None:
         """save all students that were not processed"""
         unprocessed = pd.DataFrame.from_dict(self.students, orient='index')
-        result = unprocessed.loc[~unprocessed.index.isin(self.processed )]
+        result = unprocessed.loc[~unprocessed.index.isin(self.processed)]
         result.to_excel(filename, index=False)
 
     def _add_exam(self, student, path) -> None:

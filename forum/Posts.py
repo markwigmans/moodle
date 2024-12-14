@@ -1,5 +1,7 @@
 import pandas as pd
-from Utils import Utils
+
+from utils.Utils import Utils
+
 
 class Posts:
     """Process Moodle Posts"""
@@ -17,15 +19,14 @@ class Posts:
     LINK = 'Link'
     PREFIX_LINK = "https://courses.unic.ac.cy/mod/forum/discuss.php?d="
 
-
-    def __init__(self, filename:str, forum:str):
+    def __init__(self, filename: str, forum: str):
         self.filename = filename
         self.forum = forum
 
     def read(self):
         """get posts from forum CSV file"""
         df = pd.read_csv(self.filename)
-        df = df.rename(columns={'wordcount': self.WORD_COUNT, 'message' : self.MESSAGE, 'subject' : self.SUBJECT})
+        df = df.rename(columns={'wordcount': self.WORD_COUNT, 'message': self.MESSAGE, 'subject': self.SUBJECT})
         df[self.KEY] = df['userfullname'].apply(lambda row: Utils.normalize_key(row))
         df[self.LINK] = df['discussion'].apply(lambda row: f"{self.PREFIX_LINK}{row}")
         df[self.SUBJECT] = df[self.SUBJECT].str.strip()

@@ -1,8 +1,10 @@
 import pandas as pd
-from Utils import *
+
+from utils.Utils import Utils
+
 
 class GradeSheet:
-    """Process Teams Gradesheet"""
+    """Process Teams Grade sheet"""
 
     # used column names as constants
     KEY = "key"
@@ -10,7 +12,7 @@ class GradeSheet:
     SURNAME = "Surname"
     ID_NUMBER = "ID number"
 
-    def __init__(self, filename:str, sheet_name:str, header:int=0):
+    def __init__(self, filename: str, sheet_name: str, header: int = 0):
         self.filename = filename
         self.sheet_name = sheet_name
         self.header = header
@@ -18,11 +20,12 @@ class GradeSheet:
     def read(self) -> pd.DataFrame:
         """read participation part of grade spreadsheet"""
         worksheet = (pd
-                     .read_excel(self.filename, sheet_name=self.sheet_name,  header=self.header)
+                     .read_excel(self.filename, sheet_name=self.sheet_name, header=self.header)
                      .dropna(subset=[self.FIRST_NAME, self.SURNAME]))
-         # clean data
+        # clean data
         worksheet[self.ID_NUMBER] = worksheet[self.ID_NUMBER].fillna('')
-        worksheet[self.KEY] = worksheet.apply(lambda row: Utils.normalize_key(f"{row[self.FIRST_NAME]}{row[self.SURNAME]}"), axis=1)
-        
+        worksheet[self.KEY] = worksheet.apply(
+            lambda row: Utils.normalize_key(f"{row[self.FIRST_NAME]}{row[self.SURNAME]}"), axis=1)
+
         worksheet.set_index(self.KEY)
         return worksheet
