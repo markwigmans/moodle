@@ -4,7 +4,7 @@ import unittest
 from forum.Posts import Posts
 
 
-class TestMyModule(unittest.TestCase):
+class TestForum(unittest.TestCase):
 
     def test_read_posts(self):
         test_dir = os.path.dirname(__file__)
