@@ -5,11 +5,13 @@ This repository contains useful Python scripts for processing output files from 
 
 ## Subprojects Overview
 
-| Project                    | Purpose                                         |
-|----------------------------|-------------------------------------------------|
-| [Essays](./essays/readme.md) | Process essay submissions from students         |
-| [Exam](./exam/readme.md)     | Process final exam submissions from students    |
-| [Forum](./forum/readme.md)   | Process forum posts for marking                 |
+| Project                      | Purpose                                      |
+|------------------------------|----------------------------------------------|
+| [Essays](./essays/readme.md) | Process essay submissions from students      |
+| [Exam](./exam/readme.md)     | Process final exam submissions from students |
+| [Forum](./forum/readme.md)   | Process forum posts for marking              |  
+| tests                        | unit tests for the different projects        |
+| utils                        | generic utils for the the projects           |
 
 ## Useful Commands
 
