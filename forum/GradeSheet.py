@@ -1,3 +1,5 @@
+from typing import Final
+
 import pandas as pd
 
 from utils.Utils import Utils
@@ -7,10 +9,10 @@ class GradeSheet:
     """Process Teams Grade sheet"""
 
     # used column names as constants
-    KEY = "key"
-    FIRST_NAME = "First name"
-    SURNAME = "Surname"
-    ID_NUMBER = "ID number"
+    KEY: Final[str] = "key"
+    FIRST_NAME: Final[str] = "First name"
+    SURNAME: Final[str] = "Surname"
+    ID_NUMBER: Final[str] = "ID number"
 
     def __init__(self, filename: str, sheet_name: str, header: int = 0):
         self.filename = filename

@@ -1,11 +1,13 @@
 """main file of exam application"""
-
 import configparser
+import logging
 
-from Essays import *
+from Essays import Essays
+from GradeSheet import GradeSheet
 
 
 def main():
+    logging.basicConfig(level=logging.INFO)
     config = configparser.ConfigParser()
     config.read(['default.ini', 'config.ini'])
     grades_cfg = config['grades']

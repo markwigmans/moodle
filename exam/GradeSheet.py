@@ -1,5 +1,5 @@
 import pandas as pd
-
+from typing import Final
 
 class GradeSheet:
     """
@@ -12,11 +12,11 @@ class GradeSheet:
     """
 
     # used column names as constants
-    FIRST_NAME = "First name"
-    SURNAME = "Surname"
-    ID_NUMBER = "ID number"
-    MARKER = "Marker"
-    DEFAULT_MARKER = "-"
+    FIRST_NAME: Final[str] = "First name"
+    SURNAME: Final[str] = "Surname"
+    ID_NUMBER: Final[str] = "ID number"
+    MARKER: Final[str] = "Marker"
+    DEFAULT_MARKER: Final[str] = "-"
 
     def __init__(self, filename: str, sheet_name: str, header: int):
         self.filename = filename

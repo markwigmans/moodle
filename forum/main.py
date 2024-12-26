@@ -1,12 +1,17 @@
 """main file of forum application"""
 
 import configparser
+import logging
 
-from Participation import *
+from GradeSheet import GradeSheet
+from Participation import Participation
+from Posts import Posts
 
 
 def main():
     """Main application"""
+    logging.basicConfig(level=logging.INFO)
+
     config = configparser.ConfigParser()
     config.read(['default.ini', 'config.ini'])
     students_cfg = config['students']

@@ -1,7 +1,7 @@
 import logging
 import os
 import re
-from pathlib import *
+from pathlib import Path
 from shutil import copyfile
 
 import pandas as pd
@@ -30,8 +30,8 @@ class Exams:
         for root, dirs, files in os.walk(self.source):
             for file in files:
                 self._process_file(Path(root, file))
-            for dir in dirs:
-                self._process_dir(Path(root, dir), min_length)
+            for directory in dirs:
+                self._process_dir(Path(root, directory), min_length)
         self._save_unprocessed(filename)
 
     def gen_overview(self, filename: str) -> None:
@@ -40,7 +40,7 @@ class Exams:
         exam_columns = sorted(self.exams)
         # create columns for exams in the correct order
         for exam in exam_columns:
-            overview.insert(len(overview.columns), exam, None, True)
+            overview.insert(len(overview.columns), exam, '', True)
 
         y_offset = 3
         x_offset = 5
@@ -109,30 +109,30 @@ class Exams:
         """Process dir if it is a student directory"""
         result = re.match(r"(\w{9}) - (.*)", path.stem)
         if result:
-            id = result.group(1)
-            if self.students.get(id):
+            student_id = result.group(1)
+            if self.students.get(student_id):
                 if self._dir_meets_size(path, min_length):
-                    marker = self.students[id][GradeSheet.MARKER]
+                    marker = self.students[student_id][GradeSheet.MARKER]
                     self._dir_meets_size(path, 50)
                     self._copy_dir(path, marker)
-                    self._add_exam(id, path)
-                    self.processed.add(id)
+                    self._add_exam(student_id, path)
+                    self.processed.add(student_id)
                 else:
                     logging.info(f"Under minimal length({min_length}): '{path}'")
             else:
-                logging.warning(f"Student '{id}' not found!")
+                logging.warning(f"Student '{student_id}' not found!")
 
     def _copy_file(self, file, marker) -> None:
         """copy file to target directory"""
-        dir = os.path.dirname(file).split(os.sep)[-1]
-        new = Path(self.target, marker, dir)
+        directory = os.path.dirname(file).split(os.sep)[-1]
+        new = Path(self.target, marker, directory)
         new.mkdir(parents=True, exist_ok=True)
         copyfile(file, Path(new, file.name))
 
     def _copy_dir(self, path, marker) -> None:
         """Copy dir to target directory"""
-        questionDir = os.path.dirname(path).split(os.sep)[-1]
-        new = Path(self.target, marker, questionDir, path.name)
+        question_dir = os.path.dirname(path).split(os.sep)[-1]
+        new = Path(self.target, marker, question_dir, path.name)
         new.mkdir(parents=True, exist_ok=True)
         for file in path.iterdir():
             p = Path(new, file.name)
@@ -159,8 +159,8 @@ class Exams:
 
     def _add_exam(self, student, path) -> None:
         """Add exam to student and exam list"""
-        examDir = os.path.dirname(path).split(os.sep)[-1]
-        exam = examDir.split(' ')[-1]
+        exam_dir = os.path.dirname(path).split(os.sep)[-1]
+        exam = exam_dir.split(' ')[-1]
         self.exams.add(exam)
         if student in self.student_exams:
             self.student_exams[student].add(exam)

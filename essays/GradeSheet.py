@@ -1,19 +1,21 @@
+from typing import Final
+
 import pandas as pd
 
 from utils.Utils import Utils
 
 
 class GradeSheet:
-    """Process Teams Gradesheet"""
+    """Process Teams GradeSheet"""
 
     # used column names as constants
-    FIRST_NAME = "First name"
-    SURNAME = "Surname"
-    ID_NUMBER = "ID number"
-    MARKER = "Marker"
-    DEFAULT_MARKER = "-"
-    FULL_NAME = "Full name"
-    INDEX = "ref"
+    FIRST_NAME: Final[str] = "First name"
+    SURNAME: Final[str] = "Surname"
+    ID_NUMBER: Final[str] = "ID number"
+    MARKER: Final[str] = "Marker"
+    DEFAULT_MARKER: Final[str] = "-"
+    FULL_NAME: Final[str] = "Full name"
+    INDEX: Final[str] = "ref"
 
     def __init__(self, filename: str, sheet_name: str, header: int, offset: int):
         self.filename = filename

@@ -1,22 +1,26 @@
+from typing import Final
+
+import pandas as pd
 import xlsxwriter.utility
 
 from GradeSheet import GradeSheet
-from Posts import *
+from Posts import Posts
+from utils.Utils import Utils
 
 
 class Participation:
     """The participation of the forums every student"""
 
     # used column names as constants
-    TOTAL = "Forums"
-    FORUM = "Forum"
-    SUBJECT = 'Subject'
-    MESSAGE = 'Message'
-    WORD_COUNT = 'Words'
-    LINK = 'Link'
+    TOTAL: Final[str] = "Forums"
+    FORUM: Final[str] = "Forum"
+    SUBJECT: Final[str] = 'Subject'
+    MESSAGE: Final[str] = 'Message'
+    WORD_COUNT: Final[str] = 'Words'
+    LINK: Final[str] = 'Link'
 
-    def __init__(self, gradeSheet, sheets):
-        self.gradeSheet = gradeSheet
+    def __init__(self, grade_sheet, sheets):
+        self.gradeSheet = grade_sheet
         self.sheets = sheets
 
     def gen_sheet(self, filename):
@@ -110,8 +114,8 @@ class Participation:
     def _create_data(self):
         """Calculate overall participation excel file"""
 
-        self.posts = self._generate_posts();
-        grouped = self.posts.groupby([Posts.KEY, Posts.FORUM]).size();
+        self.posts = self._generate_posts()
+        grouped = self.posts.groupby([Posts.KEY, Posts.FORUM]).size()
 
         # create empty value for every student
         df = pd.DataFrame()

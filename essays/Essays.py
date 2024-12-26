@@ -1,7 +1,7 @@
 import logging
 import os
 import re
-from pathlib import *
+from pathlib import Path
 from shutil import copyfile
 
 import pandas as pd
@@ -38,7 +38,7 @@ class Essays:
         exam_columns = sorted(self.exams)
         # create columns for exams in the correct order
         for exam in exam_columns:
-            overview.insert(len(overview.columns), exam, None, True)
+            overview.insert(len(overview.columns), exam, '', True)
 
         for student in self.students:
             for exam in exam_columns:
@@ -63,20 +63,20 @@ class Essays:
         """Process dir if it is a student directory"""
         result = re.match(r"(.*)_([0-9]+)_assignsubmission_file(.*)", path.stem)
         if result:
-            id = Utils.normalize_key(result.group(1))
-            if self.students.get(id):
-                index = self.students[id][GradeSheet.INDEX]
-                marker = self.students[id][GradeSheet.MARKER]
+            student_id = Utils.normalize_key(result.group(1))
+            if self.students.get(student_id):
+                index = self.students[student_id][GradeSheet.INDEX]
+                marker = self.students[student_id][GradeSheet.MARKER]
                 self._copy_dir(path, marker, index)
-                self._add_exam(id, path)
-                self.processed.add(id)
+                self._add_exam(student_id, path)
+                self.processed.add(student_id)
             else:
-                logging.warning(f"Student '{id}' not found!")
+                logging.warning(f"Student '{student_id}' not found!")
 
     def _copy_file(self, file, marker) -> None:
         """copy file to target directory"""
-        dir = os.path.dirname(file).split(os.sep)[-1]
-        new = Path(self.target, marker, dir)
+        directory = os.path.dirname(file).split(os.sep)[-1]
+        new = Path(self.target, marker, directory)
         new.mkdir(parents=True, exist_ok=True)
         copyfile(file, Path(new, file.name))
 
@@ -96,8 +96,8 @@ class Essays:
 
     def _add_exam(self, student, path) -> None:
         """Add exam to student and exam list"""
-        examDir = os.path.dirname(path).split(os.sep)[-1]
-        exam = examDir.split(' ')[-1]
+        exam_dir = os.path.dirname(path).split(os.sep)[-1]
+        exam = exam_dir.split(' ')[-1]
         self.exams.add(exam)
         if student in self.student_exams:
             self.student_exams[student].add(exam)

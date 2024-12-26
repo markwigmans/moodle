@@ -1,8 +1,10 @@
 """main file of exam application"""
 
 import configparser
+import logging
 
-from Exams import *
+from Exams import Exams
+from GradeSheet import GradeSheet
 
 
 def main():
