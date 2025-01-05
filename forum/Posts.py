@@ -30,7 +30,7 @@ class Posts:
         df = pd.read_csv(self.filename)
         df = df.rename(columns={'wordcount': self.WORD_COUNT, 'message': self.MESSAGE, 'subject': self.SUBJECT})
         df[self.KEY] = df['userfullname'].apply(Utils.normalize_key)
-        df[self.LINK] = self.PREFIX_LINK + df['discussion'].astype(str)
+        df[self.LINK] = self.PREFIX_LINK + df['discussion'].astype(str) + '#p' + df['id'].astype(str)
         df[self.SUBJECT] = df[self.SUBJECT].str.strip()
         df[self.MESSAGE] = df[self.MESSAGE].str.strip()
         df[self.FORUM] = self.forum
