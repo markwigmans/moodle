@@ -1,0 +1,4 @@
+﻿id,discussion,parent,userid,userfullname,created,modified,mailed,subject,message,messageformat,messagetrust,attachment,totalscore,mailnow,deleted,privatereplyto,privatereplytofullname,wordcount,charcount
+3501273,1257548,0,168621,User 1,"Tuesday, 3 December 2024, 5:09 PM","Tuesday, 3 December 2024, 5:09 PM",1,Why banks are fragile during systemic crises,test 1,2,0,0,0,0,0,0,,149,782
+3502657,1257990,0,144790,User 2,"Wednesday, 4 December 2024, 11:05 AM","Wednesday, 4 December 2024, 11:05 AM",1,The Fragility of Banks,test 2,2,0,0,0,0,0,0,,196,987
+3503542,1258277,0,163454,User 1,"Wednesday, 4 December 2024, 7:51 PM","Wednesday, 4 December 2024, 7:51 PM",1,Banks are fragile and prone to runs and systemic crises,test 3,2,0,0,0,0,0,0,,184,1009
