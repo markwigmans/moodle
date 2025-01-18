@@ -28,3 +28,6 @@ Package management is handled via [Conda](https://docs.conda.io/projects/conda/e
 - **Export/Import Environment:**
   - `conda env export > environment.yml` - Export the current environment to a YAML file.
   - `conda env create -f environment.yml` - Create an environment from an exported YAML file.
+
+- **Prepare environment for CI/CD:**
+  - `pip list --format=freeze > requirements.txt` - - Export the current environment to a pip format/
