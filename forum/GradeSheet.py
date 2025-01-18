@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Final
 
 import pandas as pd
@@ -5,8 +6,13 @@ import pandas as pd
 from utils.Utils import Utils
 
 
+@dataclass
 class GradeSheet:
     """Process Teams Grade sheet"""
+
+    filename: str
+    sheet_name: str
+    header: int = 0
 
     # used column names as constants
     KEY: Final[str] = "key"
@@ -14,10 +20,6 @@ class GradeSheet:
     SURNAME: Final[str] = "Surname"
     ID_NUMBER: Final[str] = "ID number"
 
-    def __init__(self, filename: str, sheet_name: str, header: int = 0):
-        self.filename = filename
-        self.sheet_name = sheet_name
-        self.header = header
 
     def read(self) -> pd.DataFrame:
         """read participation part of grade spreadsheet"""
