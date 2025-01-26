@@ -3,10 +3,10 @@ from typing import Final
 
 class GradeSheet:
     """
-    A class to process a gradesheet for teams.
+    A class to process a grade sheet for teams.
 
     Attributes:
-        filename (str): The name of the file containing the gradesheet.
+        filename (str): The name of the file containing the grade sheet.
         sheet_name (str): The name of the sheet within the Excel file.
         header (int): The row number of the header.
     """
