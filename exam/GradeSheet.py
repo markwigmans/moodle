@@ -1,5 +1,6 @@
 import pandas as pd
 from typing import Final
+from pydantic import validate_arguments
 
 class GradeSheet:
     """
@@ -23,7 +24,8 @@ class GradeSheet:
         self.sheet_name = sheet_name
         self.header = header
 
-    def read(self):
+    @validate_arguments
+    def read(self) -> tuple[dict, dict]:
         """
         Reads and processes the grade sheet.
 

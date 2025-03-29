@@ -71,7 +71,7 @@ class Exams:
             else:
                 logging.warning(f"Student '{student_id}' not found!")
 
-    def _copy_file(self, file, marker) -> None:
+    def _copy_file(self, file: Path, marker: str) -> None:
         """copy file to target directory"""
         directory = os.path.dirname(file).split(os.sep)[-1]
         new = Path(self.target, marker, directory)
