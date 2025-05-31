@@ -3,7 +3,7 @@ import os
 import re
 from pathlib import Path
 from shutil import copyfile
-from typing import Final
+from typing import Final, Optional
 
 import pandas as pd
 
@@ -61,13 +61,14 @@ class Exams:
         if result:
             student_id = result.group(1)
             if student := self.students.get(student_id):
-                if self._dir_meets_size(path, min_length):
+                meets_criteria, file_content = self._dir_meets_size(path, min_length)
+                if meets_criteria:
                     marker = student[GradeSheet.MARKER]
                     self._copy_dir(path, marker)
                     self._add_exam(student_id, path)
                     self.processed.add(student_id)
                 else:
-                    logging.info(f"Under minimal length({min_length}): '{path}'")
+                    logging.info(f"Under minimal length({min_length}): '{file_content}' : '{path}'")
             else:
                 logging.warning(f"Student '{student_id}' not found!")
 
@@ -86,7 +87,8 @@ class Exams:
         for file in path.iterdir():
             copyfile(file, Path(new, file.name))
 
-    def _dir_meets_size(self, path: Path, min_length: int) -> bool:
+    @staticmethod
+    def _dir_meets_size(path: Path, min_length: int) -> tuple[bool, Optional[str]]:
         """Check if any file in the directory meets the size requirement"""
         for file_path in path.iterdir():
             if file_path.is_file():
@@ -94,10 +96,12 @@ class Exams:
                     content = file.read().strip()
                     logging.debug(f"len is: {len(content)} : {content[:20]}")
                     if len(content) >= min_length:
-                        return True
+                        return True, None
+                    else:
+                        return False, content
             else:
                 logging.error(f"File: '{file_path}' is NOT a file")
-        return False
+        return False, None
 
     def _save_unprocessed(self, filename: str) -> None:
         """save all students that were not processed"""
