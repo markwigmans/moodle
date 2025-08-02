@@ -15,6 +15,8 @@ This repository contains useful Python scripts for processing output files from 
 
 ## Useful Commands
 
+Every subproject has: ``app.bat`` to run the application.
+
 ### Python Environment Management
 
 Package management is handled via [Conda](https://docs.conda.io/projects/conda/en/latest/index.html). Below are some common commands:
